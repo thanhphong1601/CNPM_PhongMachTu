@@ -14,12 +14,6 @@ class VaiTroNguoiDung(RoleEnum):
     ADMIN = 5
 
 
-class DonViThuoc(RoleEnum):
-    Chai = 1
-    Vy = 2
-    Vien = 3
-
-
 class GioiTinh(RoleEnum):
     Nam = 1
     Nu = 2
@@ -35,28 +29,19 @@ class Base(db.Model):
 class NguoiDung(Base, UserMixin):
     hoTen = Column(String(100), nullable=False)
     anhDaiDien = Column(String(100), nullable=False)
-    tenNguoiDung = Column(String(50), unique=True)
-    matKhauNguoiDung = Column(String(50), nullable=False)
-    gioiTinh = Column(Enum(GioiTinh), default=GioiTinh.Nam)
-    namSinh = Column(DateTime, nullable=False)
-    soDienThoai = Column(String(10), nullable=False)
-    diaChi = Column(String(100), nullable=False)
+    username = Column(String(50), unique=True)
+    password = Column(String(50), nullable=False)
     vaiTro_NguoiDung = Column(Enum(VaiTroNguoiDung), default=VaiTroNguoiDung.BenhNhan)
     phieuKham = relationship('PhieuKham', backref='nguoidung', lazy=True)
-    phieuDangKyKham = relationship('PhieuDangKyKham', backref='nguoidung', lazy=True)
+    chiTietDanhSachKham = relationship('ChiTietDanhSachKham', backref='nguoidung', lazy=True)
     hoaDon = relationship('HoaDon', backref='nguoidung', lazy=True)
+    danhSachKham = relationship('DanhSachKham', backref='nguoidung', lazy=True)
     # backref dùng để truy vấn ngược lại dễ hơn,
     # lazy được sử dụng để xác định cách truy xuất dữ liệu từ cơ sở dữ liệu khi cần thiết
     # active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.hoTen
-
-    def nam_sinh(self):
-        if self.namSinh:
-            return self.namSinh.year
-        else:
-            None
 
 
 class PhieuKham(Base):
@@ -72,10 +57,14 @@ class PhieuKham(Base):
         return self.hoTen
 
 
+class DonViThuoc(Base):
+    tenDonViThuoc = Column(String(50), nullable=False)
+
+
 class Thuoc(Base):
     tenThuoc = Column(String(50), unique=True, nullable=False)
     congDung = Column(String(50), nullable=False)
-    donViThuoc = Column(Enum(DonViThuoc), default=DonViThuoc.Vien)
+    donViThuoc = Column(String, ForeignKey(DonViThuoc.id), nullable=False)
     chiTietPhieuKham = relationship('ChiTietPhieuKham', backref='thuoc', lazy=True)
 
     def __str__(self):
@@ -103,13 +92,27 @@ class LichKham(Base): # chứa ngày khám để danh sách khám nó lấy về
 
 
 class DanhSachKham(Base): # Chưa làm đc cái viêc list bệnh nhân
-    benhNhan_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
+    nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
+    # can lọc người dùng là bệnh nhân
     lichNgayKham_id = Column(Integer, ForeignKey(LichKham.id), nullable=False)
+    chiTietDanhSachKham = relationship('ChiTietDanhSachKham', backref='danhsachkham', lazy=True)
 
 
-class PhieuDangKyKham(Base): # trong class diagram la ThemBenhNhan
-    benhNhan_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
-    yTa_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
+class ChiTietDanhSachKham(Base): # trong class diagram la ThemBenhNhan
+    danhSachKham_id = Column(Integer, ForeignKey(DanhSachKham.id), nullable=False)
+    nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
+    #nguoi dùng ở đây là y tá
+    hoTen = Column(String(100), nullable=False)
+    gioiTinh = Column(Enum(GioiTinh), default=GioiTinh.Nam)
+    namSinh = Column(DateTime, nullable=False)
+    soDienThoai = Column(String(10), nullable=False)
+    diaChi = Column(String(100), nullable=False)
+
+    def nam_sinh(self):
+        if self.namSinh:
+            return self.namSinh.year
+        else:
+            None
 
 
 if __name__ == '__main__':
