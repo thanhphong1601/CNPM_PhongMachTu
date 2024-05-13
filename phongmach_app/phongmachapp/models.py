@@ -33,9 +33,9 @@ class NguoiDung(Base, UserMixin):
     password = Column(String(50), nullable=False)
     vaiTro_NguoiDung = Column(Enum(VaiTroNguoiDung), default=VaiTroNguoiDung.BenhNhan)
     phieuKham = relationship('PhieuKham', backref='nguoidung', lazy=True)
+    # bỏ danhSachKham vì sai nghiệp vụ
     chiTietDanhSachKham = relationship('ChiTietDanhSachKham', backref='nguoidung', lazy=True)
     hoaDon = relationship('HoaDon', backref='nguoidung', lazy=True)
-    danhSachKham = relationship('DanhSachKham', backref='nguoidung', lazy=True)
     # backref dùng để truy vấn ngược lại dễ hơn,
     # lazy được sử dụng để xác định cách truy xuất dữ liệu từ cơ sở dữ liệu khi cần thiết
     # active = models.BooleanField(default=True)
@@ -46,7 +46,7 @@ class NguoiDung(Base, UserMixin):
 
 class PhieuKham(Base):
     benhNhan_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
-    hoTen = Column(String(100), nullable=False)
+    # bỏ họ tên vì sẽ chọn từ danh sách
     trieuChung = Column(String(50), nullable=False)
     duDoanBenh = Column(String(50), nullable=False)
     ngayKham = Column(DateTime, default=datetime.now())
@@ -64,6 +64,7 @@ class DonViThuoc(Base):
 class Thuoc(Base):
     tenThuoc = Column(String(50), unique=True, nullable=False)
     congDung = Column(String(50), nullable=False)
+    price = Column(Float, nullable=False) # thêm giá tiền
     donViThuoc = Column(String, ForeignKey(DonViThuoc.id), nullable=False)
     chiTietPhieuKham = relationship('ChiTietPhieuKham', backref='thuoc', lazy=True)
 
@@ -92,7 +93,7 @@ class LichKham(Base): # chứa ngày khám để danh sách khám nó lấy về
 
 
 class DanhSachKham(Base): # Chưa làm đc cái viêc list bệnh nhân
-    nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
+    # bỏ người dùng vì đã khai báo ở chi tiết danh sách khám
     # can lọc người dùng là bệnh nhân
     lichNgayKham_id = Column(Integer, ForeignKey(LichKham.id), nullable=False)
     chiTietDanhSachKham = relationship('ChiTietDanhSachKham', backref='danhsachkham', lazy=True)
@@ -101,7 +102,7 @@ class DanhSachKham(Base): # Chưa làm đc cái viêc list bệnh nhân
 class ChiTietDanhSachKham(Base): # trong class diagram la ThemBenhNhan
     danhSachKham_id = Column(Integer, ForeignKey(DanhSachKham.id), nullable=False)
     nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
-    #nguoi dùng ở đây là y tá
+    #nguoi dùng ở đây là tất cả
     hoTen = Column(String(100), nullable=False)
     gioiTinh = Column(Enum(GioiTinh), default=GioiTinh.Nam)
     namSinh = Column(DateTime, nullable=False)
