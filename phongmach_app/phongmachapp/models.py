@@ -89,7 +89,7 @@ class ChiTietPhieuKham(Base):
     thuoc_id = Column(Integer, ForeignKey(Thuoc.id), nullable=False)
 
 
-class HoaDon(Base):
+class HoaDon(Base): # cần có khóa ngoại là người dùng cụ thể lần lượt là bệnh nhân và phiếu khám
     ngayKham = Column(DateTime, default=datetime.now(), nullable=False)
     tienKham = Column(Float, default=0)
     tienThuoc = Column(Float, default=0)
@@ -97,17 +97,17 @@ class HoaDon(Base):
     phieuKham_id = Column(Integer, ForeignKey(PhieuKham.id), nullable=False)
 
 
-class LichKham(Base):
+class LichKham(Base): # chứa ngày khám để danh sách khám nó lấy về cái id ngày khám đó
     ngayKham = Column(DateTime, default=datetime.now(), nullable=False)
     danhSachKham = relationship('DanhSachKham', backref='lichkham', lazy=True)
 
 
-class DanhSachKham(Base):
+class DanhSachKham(Base): # Chưa làm đc cái viêc list bệnh nhân
     benhNhan_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
     lichNgayKham_id = Column(Integer, ForeignKey(LichKham.id), nullable=False)
 
 
-class PhieuDangKyKham(Base):
+class PhieuDangKyKham(Base): # trong class diagram la ThemBenhNhan
     benhNhan_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
     yTa_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
 
