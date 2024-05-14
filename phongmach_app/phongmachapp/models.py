@@ -33,7 +33,6 @@ class NguoiDung(Base, UserMixin):
     password = Column(String(50), nullable=False)
     vaiTro_NguoiDung = Column(Enum(VaiTroNguoiDung), default=VaiTroNguoiDung.BenhNhan)
     phieuKham = relationship('PhieuKham', backref='nguoidung', lazy=True)
-    # bỏ danhSachKham vì sai nghiệp vụ
     chiTietDanhSachKham = relationship('ChiTietDanhSachKham', backref='nguoidung', lazy=True)
     hoaDon = relationship('HoaDon', backref='nguoidung', lazy=True)
     # backref dùng để truy vấn ngược lại dễ hơn,
@@ -60,25 +59,26 @@ class PhieuKham(Base):
 
 class DonViThuoc(Base):
     tenDonViThuoc = Column(String(50), nullable=False)
+    thuocs = relationship('Thuoc', backref='donViThuoc', lazy=True)
 
 
 class Thuoc(Base):
     tenThuoc = Column(String(50), unique=True, nullable=False)
     congDung = Column(String(50), nullable=False)
-    price = Column(Float, nullable=False) # thêm giá tiền
-    donViThuoc = Column(String, ForeignKey(DonViThuoc.id), nullable=False)
+    price = Column(Float, nullable=False)  # thêm giá tiền
+    donViThuoc = Column(Integer, ForeignKey(DonViThuoc.id), nullable=False)
     chiTietPhieuKham = relationship('ChiTietPhieuKham', backref='thuoc', lazy=True)
     loaiThuocs = relationship('LoaiThuoc', secondary='thuoc_loaiThuoc', lazy='subquery',
-                              backref=backref('thuocs_list', lazy=True))
+                              backref=backref('thuocs', lazy=True))
 
     def __str__(self):
         return self.tenThuoc
 
 
 class LoaiThuoc(Base):
-    tenLoai = congDung = Column(String(50), nullable=False)
+    tenLoai = Column(String(50), nullable=False)
     thuocs = relationship('Thuoc', secondary='thuoc_loaiThuoc', lazy='subquery',
-                          backref=backref('loaiThuocs_list', lazy=True))
+                          backref=backref('loaiThuocs', lazy=True))
 
 
 thuoc_loaiThuoc = db.Table('thuoc_loaiThuoc',
@@ -93,7 +93,7 @@ class ChiTietPhieuKham(Base):
     thuoc_id = Column(Integer, ForeignKey(Thuoc.id), nullable=False)
 
 
-class HoaDon(Base): # cần có khóa ngoại là người dùng cụ thể lần lượt là bệnh nhân và phiếu khám
+class HoaDon(Base):  # cần có khóa ngoại là người dùng cụ thể lần lượt là bệnh nhân và phiếu khám
     ngayKham = Column(DateTime, default=datetime.now(), nullable=False)
     tienKham = Column(Float, default=0)
     tienThuoc = Column(Float, default=0)
@@ -101,22 +101,22 @@ class HoaDon(Base): # cần có khóa ngoại là người dùng cụ thể lầ
     phieuKham_id = Column(Integer, ForeignKey(PhieuKham.id), nullable=False)
 
 
-class LichKham(Base): # chứa ngày khám để danh sách khám nó lấy về cái id ngày khám đó
+class LichKham(Base):  # chứa ngày khám để danh sách khám nó lấy về cái id ngày khám đó
     ngayKham = Column(DateTime, default=datetime.now(), nullable=False)
     danhSachKham = relationship('DanhSachKham', backref='lichkham', lazy=True)
 
 
-class DanhSachKham(Base): # Chưa làm đc cái viêc list bệnh nhân
+class DanhSachKham(Base):  # Chưa làm đc cái viêc list bệnh nhân
     # bỏ người dùng vì đã khai báo ở chi tiết danh sách khám
     # can lọc người dùng là bệnh nhân
     lichNgayKham_id = Column(Integer, ForeignKey(LichKham.id), nullable=False)
     chiTietDanhSachKham = relationship('ChiTietDanhSachKham', backref='danhsachkham', lazy=True)
 
 
-class ChiTietDanhSachKham(Base): # trong class diagram la ThemBenhNhan
+class ChiTietDanhSachKham(Base):  # trong class diagram la ThemBenhNhan
     danhSachKham_id = Column(Integer, ForeignKey(DanhSachKham.id), nullable=False)
     nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
-    #nguoi dùng ở đây là tất cả
+    # nguoi dùng ở đây là tất cả
     hoTen = Column(String(100), nullable=False)
     gioiTinh = Column(Enum(GioiTinh), default=GioiTinh.Nam)
     namSinh = Column(DateTime, nullable=False)
