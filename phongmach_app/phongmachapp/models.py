@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Float, Integer, ForeignKey, Enum, Boolean, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from phongmachapp import db, app
 from flask_login import UserMixin
 from enum import Enum as RoleEnum
@@ -68,6 +68,8 @@ class Thuoc(Base):
     price = Column(Float, nullable=False) # thêm giá tiền
     donViThuoc = Column(String, ForeignKey(DonViThuoc.id), nullable=False)
     chiTietPhieuKham = relationship('ChiTietPhieuKham', backref='thuoc', lazy=True)
+    loaiThuocs = relationship('LoaiThuoc', secondary='thuoc_loaiThuoc', lazy='subquery',
+                              backref=backref('thuocs_list', lazy=True))
 
     def __str__(self):
         return self.tenThuoc
@@ -75,6 +77,8 @@ class Thuoc(Base):
 
 class LoaiThuoc(Base):
     tenLoai = congDung = Column(String(50), nullable=False)
+    thuocs = relationship('Thuoc', secondary='thuoc_loaiThuoc', lazy='subquery',
+                          backref=backref('loaiThuocs_list', lazy=True))
 
 
 thuoc_loaiThuoc = db.Table('thuoc_loaiThuoc',
