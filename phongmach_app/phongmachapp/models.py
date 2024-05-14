@@ -47,6 +47,7 @@ class NguoiDung(Base, UserMixin):
 class PhieuKham(Base):
     benhNhan_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
     # bỏ họ tên vì sẽ chọn từ danh sách
+    tenBenhNhan = Column(String(100), nullable=False)
     trieuChung = Column(String(50), nullable=False)
     duDoanBenh = Column(String(50), nullable=False)
     ngayKham = Column(DateTime, default=datetime.now())
@@ -70,6 +71,15 @@ class Thuoc(Base):
 
     def __str__(self):
         return self.tenThuoc
+
+
+class LoaiThuoc(Base):
+    tenLoai = congDung = Column(String(50), nullable=False)
+
+
+thuoc_loaiThuoc = db.Table('thuoc_loaiThuoc',
+                           Column('thuoc_id', Integer, ForeignKey(Thuoc.id), primary_key=True),
+                           Column('loaiThuoc_id', Integer, ForeignKey(LoaiThuoc.id), primary_key=True))
 
 
 class ChiTietPhieuKham(Base):
