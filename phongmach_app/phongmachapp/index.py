@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect
 import dao
-from phongmachapp import app
+from phongmachapp import app, admin
 
 
 @app.route('/')
