@@ -5,6 +5,9 @@
 
 {% block content%}
 <h1 style="text-align: center; margin-bottom: 60px">Đăng Nhập</h1>
+{% if err_msg %}
+<div class="alert-danger"> {{ err_msg }}</div>
+{% endif %}
 <form method="post" action="/login">
     <div class="form-floating mb-3 mt-3">
         <input type="text" class="form-control" id="username" placeholder="Nhập tên đăng nhập..." name="username" required>
