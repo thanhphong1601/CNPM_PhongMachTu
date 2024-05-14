@@ -66,9 +66,7 @@ class Thuoc(Base):
     tenThuoc = Column(String(50), unique=True, nullable=False)
     congDung = Column(String(50), nullable=False)
     price = Column(Float, nullable=False)  # thêm giá tiền
-    donViThuoc = Column(Integer, ForeignKey(DonViThuoc.id), nullable=False)
     chiTietPhieuKham = relationship('ChiTietPhieuKham', backref='thuoc', lazy=True)
-    price = Column(Float, nullable=False) # thêm giá tiền
     donViThuoc_id = Column(Integer, ForeignKey(DonViThuoc.id), nullable=False)
     # chiTietPhieuKham = relationship('ChiTietPhieuKham', backref='thuoc', lazy=True)
     loaiThuocs = relationship('LoaiThuoc', secondary='thuoc_loaiThuoc', lazy='subquery',
@@ -134,7 +132,7 @@ class ChiTietDanhSachKham(Base):  # trong class diagram la ThemBenhNhan
             return self.namSinh.year
         else:
             None
-            
+
 
 class QuyDinh(Base):
     soTienKham = Column(Float, default=100000, nullable=False)
