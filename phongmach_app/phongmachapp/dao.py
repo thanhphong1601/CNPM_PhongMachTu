@@ -1,6 +1,8 @@
 import json, hashlib
-from phongmachapp.models import (Thuoc, LoaiThuoc, DonViThuoc, NguoiDung, GioiTinh, ChiTietDanhSachKham,
-                                 LichKham, DanhSachKham, ChiTietPhieuKham, PhieuKham)
+
+from sqlalchemy import func
+
+from phongmachapp.models import Thuoc, LoaiThuoc, DonViThuoc, NguoiDung, GioiTinh, ChiTietDanhSachKham, LichKham, DanhSachKham, QuyDinh
 from phongmachapp import app, db
 
 
@@ -15,22 +17,6 @@ def load_gender():
 
 def get_user_by_id(id):
     return NguoiDung.query.get(id)
-
-
-def load_medicines():
-    return Thuoc.query.all()
-
-
-def load_examination_details():
-    return ChiTietPhieuKham.query.all()
-
-
-def load_examination():
-    return PhieuKham.query.all()
-
-
-def load_medicines_unit():
-    return DonViThuoc.query.all()
 
 
 def auth_user(username, password):
@@ -70,6 +56,19 @@ def add_danhSachKham(lichKham_id):
     danhSachKham = DanhSachKham(lichNgayKham_id=lichKham_id)
     db.session.add(danhSachKham)
     db.session.commit()
+
+
+def count_soBenhNhan(id):
+    return db.session.query(func.count(ChiTietDanhSachKham.id))\
+        .filter(ChiTietDanhSachKham.danhSachKham_id == id)\
+        .scalar()
+
+
+def get_max_benhNhan():
+    qd = QuyDinh.query.get(1)
+    soBenhNhan = qd.soBenhNhan
+    return soBenhNhan
+
 
 
 if __name__ == '__main__':
