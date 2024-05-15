@@ -1,9 +1,9 @@
-from sqlalchemy import Column, String, Float, Integer, ForeignKey, Enum, Boolean, DateTime
+from sqlalchemy import Column, String, Float, Integer, ForeignKey, Enum, Boolean, DateTime, Date
 from sqlalchemy.orm import relationship, backref
 from phongmachapp import db, app
 from flask_login import UserMixin
 from enum import Enum as RoleEnum
-from datetime import datetime
+from datetime import datetime, date
 
 
 class VaiTroNguoiDung(RoleEnum):
@@ -33,8 +33,7 @@ class NguoiDung(Base, UserMixin):
     password = Column(String(50), nullable=False)
     vaiTro_NguoiDung = Column(Enum(VaiTroNguoiDung), default=VaiTroNguoiDung.BenhNhan)
     # phieuKhams = relationship('PhieuKham', backref='nguoidung', lazy=True)
-    # bỏ danhSachKham vì sai nghiệp vụ
-    # chiTietDanhSachKhams = relationship('ChiTietDanhSachKham', backref='nguoidung', lazy=True)
+    chiTietDanhSachKhams = relationship('ChiTietDanhSachKham', backref='nguoidung', lazy=True)
     # hoaDons = relationship('HoaDon', backref='nguoidung', lazy=True)
     # backref dùng để truy vấn ngược lại dễ hơn,
     # lazy được sử dụng để xác định cách truy xuất dữ liệu từ cơ sở dữ liệu khi cần thiết
@@ -43,7 +42,7 @@ class NguoiDung(Base, UserMixin):
     def __str__(self):
         return self.hoTen
 
-#
+
 # class PhieuKham(Base):
 #     benhNhan_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
 #     # bỏ họ tên vì sẽ chọn từ danh sách
@@ -56,7 +55,7 @@ class NguoiDung(Base, UserMixin):
 #
 #     def __str__(self):
 #         return self.hoTen
-
+#
 
 class DonViThuoc(Base):
     tenDonVi = Column(String(50), nullable=False)
@@ -107,41 +106,41 @@ thuoc_loaiThuoc = db.Table('thuoc_loaiThuoc',
 #     tienThuoc = Column(Float, default=0)
 #     nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
 #     phieuKham_id = Column(Integer, ForeignKey(PhieuKham.id), nullable=False)
+
+
+class LichKham(Base): # chứa ngày khám để danh sách khám nó lấy về cái id ngày khám đó
+    ngayKham = Column(Date, default=date.today, nullable=False)
+    danhSachKham = relationship('DanhSachKham', backref='lichKham', lazy=True)
 #
+
+class DanhSachKham(Base): # Chưa làm đc cái viêc list bệnh nhân
+    # bỏ người dùng vì đã khai báo ở chi tiết danh sách khám
+    # can lọc người dùng là bệnh nhân
+    lichNgayKham_id = Column(Integer, ForeignKey(LichKham.id), nullable=False)
+    chiTietDanhSachKham = relationship('ChiTietDanhSachKham', backref='danhSachKham', lazy=True)
+
 #
-# class LichKham(Base): # chứa ngày khám để danh sách khám nó lấy về cái id ngày khám đó
-#     ngayKham = Column(DateTime, default=datetime.now(), nullable=False)
-#     danhSachKham = relationship('DanhSachKham', backref='lichkham', lazy=True)
-#
-#
-# class DanhSachKham(Base): # Chưa làm đc cái viêc list bệnh nhân
-#     # bỏ người dùng vì đã khai báo ở chi tiết danh sách khám
-#     # can lọc người dùng là bệnh nhân
-#     lichNgayKham_id = Column(Integer, ForeignKey(LichKham.id), nullable=False)
-#     chiTietDanhSachKham = relationship('ChiTietDanhSachKham', backref='danhsachkham', lazy=True)
-#
-#
-# class ChiTietDanhSachKham(Base): # trong class diagram la ThemBenhNhan
-#     danhSachKham_id = Column(Integer, ForeignKey(DanhSachKham.id), nullable=False)
-#     nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
-#     #nguoi dùng ở đây là tất cả
-#     hoTen = Column(String(100), nullable=False)
-#     gioiTinh = Column(Enum(GioiTinh), default=GioiTinh.Nam)
-#     namSinh = Column(DateTime, nullable=False)
-#     soDienThoai = Column(String(10), nullable=False)
-#     diaChi = Column(String(100), nullable=False)
-#
-#     def nam_sinh(self):
-#         if self.namSinh:
-#             return self.namSinh.year
-#         else:
-#             None
+class ChiTietDanhSachKham(Base): # trong class diagram la ThemBenhNhan
+    danhSachKham_id = Column(Integer, ForeignKey(DanhSachKham.id), nullable=False)
+    nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
+    #nguoi dùng ở đây là tất cả
+    hoTen = Column(String(100), nullable=False)
+    gioiTinh = Column(Enum(GioiTinh), default=GioiTinh.Nam)
+    namSinh = Column(Date, nullable=False)
+    soDienThoai = Column(String(10), nullable=False)
+    diaChi = Column(String(100), nullable=False)
+
+    def nam_sinh(self):
+        if self.namSinh:
+            return self.namSinh.year
+        else:
+            None
 
 
 class QuyDinh(Base):
     soTienKham = Column(Float, default=100000, nullable=False)
     soLoaiThuoc = Column(Integer, default=30, nullable=False)
-    soLoaiThuoc = Column(Integer, default=40, nullable=False)
+    soBenhNhan = Column(Integer, default=40, nullable=False)
 
 
 if __name__ == '__main__':
@@ -151,15 +150,17 @@ if __name__ == '__main__':
         # loaiThuoc1 = LoaiThuoc(tenLoai="Thuốc Ngủ")
         # loaiThuoc2 = LoaiThuoc(tenLoai="Thuốc Nhứt Đầu")
         #
+        # qd = QuyDinh(soTienKham=100000, soLoaiThuoc=30, soBenhNhan=40)
+        # db.session.add(qd)
+        # db.session.commit()
 
-
-        import hashlib
-        u = NguoiDung(hoTen='Quản Trị Viên',
-                      anhDaiDien='https://res.cloudinary.com/dstjar2iy/image/upload/v1712391157/lwocwuc4opc6c9kl6fcw.jpg',
-                      username='admin',
-                      password=str(hashlib.md5("1".encode('utf-8')).hexdigest()),
-                      vaiTro_NguoiDung=VaiTroNguoiDung.ADMIN)
-
-        db.session.add(u)
-        db.session.commit()
+        # import hashlib
+        # u = NguoiDung(hoTen='Quản Trị Viên',
+        #               anhDaiDien='https://res.cloudinary.com/dstjar2iy/image/upload/v1712391157/lwocwuc4opc6c9kl6fcw.jpg',
+        #               username='admin',
+        #               password=str(hashlib.md5("1".encode('utf-8')).hexdigest()),
+        #               vaiTro_NguoiDung=VaiTroNguoiDung.ADMIN)
+        #
+        # db.session.add(u)
+        # db.session.commit()
 

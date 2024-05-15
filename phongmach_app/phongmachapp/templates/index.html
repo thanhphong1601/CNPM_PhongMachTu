@@ -3,6 +3,9 @@
 {% block title %}Trang chủ{% endblock %}
 {% block content %}
         <h1 style="text-align: center; margin-bottom: 80px">Phần mềm Phòng Mạch Tư</h1>
+{% if err_msg %}
+<h1>Trôn</h1>
+{% endif %}
         <div class="d-flex justify-content-around">
             <a class="btn btn-outline-dark btn-lg p-2" href="/benhnhan" style="border-radius:20px">
                  <h1 class="m-2">Người Dùng</h1>

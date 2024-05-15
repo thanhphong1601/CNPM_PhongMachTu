@@ -4,7 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="548c8e9c-8088-45aa-977f-695e8a1564be" name="Changes" comment="" />
+    <list default="true" id="548c8e9c-8088-45aa-977f-695e8a1564be" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/phongmachapp/decorators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/phongmach_app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/phongmach_app.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/dao.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/index.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/templates/dangKyKham.html" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/templates/dangKyKham.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/templates/index.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -98,5 +109,15 @@
       <updated>1715617853993</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/phongmachapp/admin.py</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

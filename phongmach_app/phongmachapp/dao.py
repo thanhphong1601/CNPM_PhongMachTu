@@ -1,11 +1,15 @@
 import json, hashlib
-from phongmachapp.models import Thuoc, LoaiThuoc, DonViThuoc, NguoiDung
+from phongmachapp.models import Thuoc, LoaiThuoc, DonViThuoc, NguoiDung, GioiTinh, ChiTietDanhSachKham, LichKham, DanhSachKham
 from phongmachapp import app, db
 
 
 def load_categories():
     with open('data/categories.json', encoding='utf-8') as f:
         return json.load(f)
+
+
+def load_gender():
+    return [(gender.name, gender.value) for gender in GioiTinh]
 
 
 def get_user_by_id(id):
@@ -27,6 +31,28 @@ def add_user(name, username, password, avatar):
     db.session.commit()
 
 
+def add_detail_benhNhan(danhSach_id, nguoiDangKy_id, hoTen, gioiTinh, namSinh, soDienThoai, diaChi):
+    detail = ChiTietDanhSachKham(danhSachKham_id=danhSach_id,
+                                 nguoiDung_id=nguoiDangKy_id,
+                                 hoTen=hoTen,
+                                 gioiTinh=gioiTinh,
+                                 namSinh=namSinh,
+                                 soDienThoai=soDienThoai,
+                                 diaChi=diaChi)
+    db.session.add(detail)
+    db.session.commit()
+
+
+def add_lichKham(ngayKham):
+    lichKham = LichKham(ngayKham=ngayKham)
+    db.session.add(lichKham)
+    db.session.commit()
+
+
+def add_danhSachKham(lichKham_id):
+    danhSachKham = DanhSachKham(lichNgayKham_id=lichKham_id)
+    db.session.add(danhSachKham)
+    db.session.commit()
 
 
 
