@@ -2,6 +2,8 @@ from flask import render_template, request, redirect
 import dao
 from phongmachapp import app, admin, login
 from flask_login import login_user, current_user, logout_user
+from phongmachapp.models import NguoiDung
+import cloudinary.uploader
 
 
 @app.route('/')
@@ -46,9 +48,33 @@ def logout_my_user():
     return redirect('/login')
 
 
-@app.route('/register')
+@app.route('/register', methods=['get', 'post'])
 def register_user():
-    return render_template('/register.html')
+    err_msg = ''
+    if request.method.__eq__('POST'):
+        username = request.form.get('username')
+        if NguoiDung.query.filter(NguoiDung.username.__eq__(username)).first():
+            err_msg = 'Tài khoản đã tồn tại'
+        else:
+            password = request.form.get('password')
+            confirm_password = request.form.get('confirm_password')
+            if password.__eq__(confirm_password):
+                avatar_path = ''
+                avatar = request.files.get('avatar')
+                if avatar:
+                    res = cloudinary.uploader.upload(avatar)
+                    avatar_path = res['secure_url']
+
+                dao.add_user(name=request.form.get('name'),
+                             username=username,
+                             password=password,
+                             avatar=avatar_path)
+
+                return redirect('/login')
+            else:
+                err_msg = 'Mật khẩu xác nhận không đúng'
+
+    return render_template('/register.html', err_msg=err_msg)
 
 
 @app.route('/admin-login', methods=['post'])
@@ -62,6 +88,11 @@ def process_admin_login():
         login_user(user=u)
 
     return redirect('/admin')
+
+
+@app.route('/api/test', methods=['post'])
+def test_add():
+    print(request.json)
 
 
 @login.user_loader

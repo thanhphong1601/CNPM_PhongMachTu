@@ -72,5 +72,6 @@ admin.add_view(MyDonViThuocView(DonViThuoc, db.session))
 admin.add_view(MyThuocView(Thuoc, db.session))
 admin.add_view(MyLoaiThuocView(LoaiThuoc, db.session))
 
+
 admin.add_view(StatsView(name="Thống Kê"))
 admin.add_view(LogoutView(name="Đăng Xuất"))

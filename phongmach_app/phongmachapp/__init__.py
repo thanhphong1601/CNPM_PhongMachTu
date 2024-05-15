@@ -1,3 +1,4 @@
+import cloudinary
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from urllib.parse import quote
@@ -10,3 +11,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
 db = SQLAlchemy(app)
 login = LoginManager(app)
+
+cloudinary.config(cloud_name='dstjar2iy',
+                  api_key='929341466922158',
+                  api_secret='ZydOWhhvZkUfCfoOIwuTYObfmbM')
