@@ -1,9 +1,9 @@
-from sqlalchemy import Column, String, Float, Integer, ForeignKey, Enum, Boolean, DateTime
+from sqlalchemy import Column, String, Float, Integer, ForeignKey, Enum, Boolean, DateTime, Date
 from sqlalchemy.orm import relationship, backref
 from phongmachapp import db, app
 from flask_login import UserMixin
 from enum import Enum as RoleEnum
-from datetime import datetime
+from datetime import datetime, date
 
 
 class VaiTroNguoiDung(RoleEnum):
@@ -33,8 +33,7 @@ class NguoiDung(Base, UserMixin):
     password = Column(String(50), nullable=False)
     vaiTro_NguoiDung = Column(Enum(VaiTroNguoiDung), default=VaiTroNguoiDung.BenhNhan)
     # phieuKhams = relationship('PhieuKham', backref='nguoidung', lazy=True)
-    # bỏ danhSachKham vì sai nghiệp vụ
-    # chiTietDanhSachKhams = relationship('ChiTietDanhSachKham', backref='nguoidung', lazy=True)
+    chiTietDanhSachKhams = relationship('ChiTietDanhSachKham', backref='nguoidung', lazy=True)
     # hoaDons = relationship('HoaDon', backref='nguoidung', lazy=True)
     # backref dùng để truy vấn ngược lại dễ hơn,
     # lazy được sử dụng để xác định cách truy xuất dữ liệu từ cơ sở dữ liệu khi cần thiết
@@ -114,6 +113,7 @@ class LichKham(Base): # chứa ngày khám để danh sách khám nó lấy về
     danhSachKham = relationship('DanhSachKham', backref='lichkham', lazy=True)
 
 
+
 class DanhSachKham(Base): # Chưa làm đc cái viêc list bệnh nhân
     # bỏ người dùng vì đã khai báo ở chi tiết danh sách khám
     # can lọc người dùng là bệnh nhân
@@ -138,6 +138,11 @@ class ChiTietDanhSachKham(Base): # trong class diagram la ThemBenhNhan
     #         None
     def __str__(self):
         return self.hoTen
+    def nam_sinh(self):
+        if self.namSinh:
+            return self.namSinh.year
+        else:
+            None
 
 
 class QuyDinh(Base):
@@ -169,10 +174,12 @@ if __name__ == '__main__':
         #
         # loaiThuoc1 = LoaiThuoc(tenLoai="Thuốc Ngủ")
         # loaiThuoc2 = LoaiThuoc(tenLoai="Thuốc Nhứt Đầu")
-        #
         # db.session.add_all([loaiThuoc1, loaiThuoc2])
         # db.session.commit()
         #
+        # qd = QuyDinh(soTienKham=100000, soLoaiThuoc=30, soBenhNhan=40)
+        # db.session.add(qd)
+        # db.session.commit()
         # import hashlib
         # u = NguoiDung(hoTen='Quản Trị Viên',
         #               anhDaiDien='https://res.cloudinary.com/dstjar2iy/image/upload/v1712391157/lwocwuc4opc6c9kl6fcw.jpg',

@@ -1,7 +1,7 @@
 from flask_admin import Admin, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView
-from phongmachapp.models import Thuoc, DonViThuoc, LoaiThuoc, VaiTroNguoiDung
+from phongmachapp.models import Thuoc, DonViThuoc, LoaiThuoc, VaiTroNguoiDung, NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham
 from phongmachapp import app, db
 from flask_login import logout_user, current_user
 from flask import redirect
@@ -44,6 +44,22 @@ class MyLoaiThuocView(AuthenticatedView):
     }
 
 
+class MyUserView(ModelView):
+        column_list = ['id', 'hoTen', 'username', 'password', 'vaiTro_NguoiDung']
+
+
+class MyLichView(ModelView):
+        column_list = ['id', 'ngayKham']
+
+
+class MyDanhSachKham(ModelView):
+        column_list = ['id', 'lichNgayKham_id']
+
+
+class MyChiTietDanhSachKham(ModelView):
+        column_list = ['id', 'danhSach_id', 'nguoiDung_id', 'hoTen', 'namSinh']
+
+
 class StatsView(BaseView):
     @expose('/')
     def index(self):
@@ -67,6 +83,10 @@ admin = Admin(app, name="Phong Mach Tu", template_mode="bootstrap4")
 admin.add_view(MyDonViThuocView(DonViThuoc, db.session))
 admin.add_view(MyThuocView(Thuoc, db.session))
 admin.add_view(MyLoaiThuocView(LoaiThuoc, db.session))
+admin.add_view(MyUserView(NguoiDung, db.session))
+admin.add_view(MyLichView(LichKham, db.session))
+admin.add_view(MyDanhSachKham(DanhSachKham, db.session))
+admin.add_view(MyChiTietDanhSachKham(ChiTietDanhSachKham, db.session))
 
 admin.add_view(StatsView(name="Thống Kê"))
 admin.add_view(LogoutView(name="Đăng Xuất"))
