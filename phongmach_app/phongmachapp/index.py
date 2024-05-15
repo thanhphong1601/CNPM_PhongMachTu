@@ -10,6 +10,16 @@ def index():
     return render_template('index.html', categories=categories)
 
 
+@app.route('/lapphieukham', methods=['get', 'post'])
+def lapPhieuKham():
+    thuocs = dao.load_medicines()
+    medicines_unit = dao.load_medicines_unit()
+
+    if request.method.__eq__('POST'):
+        print(request.form)
+    return render_template('lapPhieuKham.html', thuocs=thuocs, medicines_unit=medicines_unit)
+
+
 @app.route('/benhnhan')
 def user():
     return render_template('trangBenhNhan.html')

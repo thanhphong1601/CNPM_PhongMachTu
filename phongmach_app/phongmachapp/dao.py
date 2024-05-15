@@ -11,6 +11,13 @@ def get_user_by_id(id):
     return NguoiDung.query.get(id)
 
 
+def load_medicines():
+    return Thuoc.query.all()
+
+def load_medicines_unit():
+    return DonViThuoc.query.all()
+
+
 def auth_user(username, password):
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
     print(password)
