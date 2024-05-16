@@ -52,9 +52,6 @@ class PhieuKham(Base):
     chiTietPhieuKhams = relationship('ChiTietPhieuKham', backref='phieukham', lazy=True)
     hoaDon = relationship('HoaDon', backref='phieukham', lazy=True)
 
-    def __str__(self):
-        return self.hoTen
-
 
 class DonViThuoc(Base):
     tenDonVi = Column(String(50), nullable=False)
@@ -104,24 +101,23 @@ class HoaDon(Base): # cần có khóa ngoại là người dùng cụ thể lầ
     tienThuoc = Column(Float, default=0)
     nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
     phieuKham_id = Column(Integer, ForeignKey(PhieuKham.id), nullable=False)
+    da_thanh_toan = Column(Boolean, default=False)
 
 
 class LichKham(Base): # chứa ngày khám để danh sách khám nó lấy về cái id ngày khám đó
     ngayKham = Column(Date, default=date.today, nullable=False)
     danhSachKham = relationship('DanhSachKham', backref='lichKham', lazy=True)
-#
+
 
 class DanhSachKham(Base):
     lichNgayKham_id = Column(Integer, ForeignKey(LichKham.id), nullable=False)
     chiTietDanhSachKham = relationship('ChiTietDanhSachKham', backref='danhSachKham', lazy=True)
 
 
-
-#
 class ChiTietDanhSachKham(Base): # trong class diagram la ThemBenhNhan
     danhSachKham_id = Column(Integer, ForeignKey(DanhSachKham.id), nullable=False)
     nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
-    #nguoi dùng ở đây là tất cả
+    # nguoi dùng ở đây là tất cả
     hoTen = Column(String(100), nullable=False)
     gioiTinh = Column(Enum(GioiTinh), default=GioiTinh.Nam)
     namSinh = Column(Date, nullable=False)
@@ -133,7 +129,6 @@ class ChiTietDanhSachKham(Base): # trong class diagram la ThemBenhNhan
             return self.namSinh.year
         else:
             None
-
 
 
 class QuyDinh(Base):

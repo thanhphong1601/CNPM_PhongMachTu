@@ -12,8 +12,8 @@ $(document).ready(function() {
 
         // Thêm các ô vào dòng mới
         newRow.append('<td>' + (rowCount + 1) + '</td>');
-        newRow.append('<td><select class="form-select" name="nameMedicine"><option value=""></option>{% for t in thuocs %}<option value="">{{ t.tenThuoc }}</option>{% endfor %}</select></td>');
-        newRow.append('<td><select class="form-select" name="medicineType">{% for m in medicines_unit %}<option value="">{{ m.tenDonVi }}</option>{% endfor %}</select></td>');
+        newRow.append('<td><select class="form-select" name="nameMedicine"><option value=""></option>{% for t in thuocs %}<option value=""></option>{% endfor %}</select></td>');
+        newRow.append('<td><select class="form-select" name="medicineType">{% for m in medicines_unit %}<option value=""></option>{% endfor %}</select></td>');
         newRow.append('<td><input class="form-control" name="quantity"></td>');
         newRow.append('<td><input class="form-control" name="howToUse"></td>');
 

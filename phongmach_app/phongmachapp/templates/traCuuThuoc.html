@@ -16,29 +16,13 @@
                 <tr>
                     <th>STT</th>
                     <th>Tên thuốc</th>
-                    <th>Đơn vị</th>
                     <th>Công dụng</th>
                 </tr>
                 {% for t in results %}
                 <tr>
-
                     <td>{{ t.id }}</td>
-                    <td>
-                        <select class="form-select" name="nameMedicine">
-                            <option value="">{{ t.tenThuoc }}</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-select" name="medicineType">
-                            {% for m in medicines_unit %}
-                                <option value="">{{ m.tenDonVi }}</option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                    <td>
-                        {{ t.congDung }}
-                    </td>
-
+                    <td>{{ t.tenThuoc }}</td>
+                    <td>{{ t.congDung }}</td>
                 </tr>
                 {% endfor %}
             </table>

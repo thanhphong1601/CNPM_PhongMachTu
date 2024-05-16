@@ -107,6 +107,5 @@ def get_danhSachKham_by_lichKhamID(id):
     return DanhSachKham.query.filter_by(lichNgayKham_id=id).first()
 
 
-
 if __name__ == '__main__':
     print(load_categories())
