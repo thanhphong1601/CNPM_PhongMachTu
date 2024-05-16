@@ -17,6 +17,18 @@ def get_user_by_id(id):
     return NguoiDung.query.get(id)
 
 
+def sreach_medicines(q=None, medi_id=None):
+    query = Thuoc.query
+
+    if q:
+        query = query.filter(Thuoc.tenThuoc.contains(q))
+
+    # if medi_id:
+    #     query = query.filter(Thuoc.category_id.__eq__(medi_id))
+
+    return query.all()
+
+
 def load_medicines():
     return Thuoc.query.all()
 

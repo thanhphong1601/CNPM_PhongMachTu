@@ -1,0 +1,48 @@
+{% extends 'layout/base.html'%}
+
+{% block title %}Tra cứu thuốc{% endblock %}
+
+
+{% block content%}
+<h1 style="text-align: center; margin-bottom: 60px">Tra cứu thuốc</h1>
+<form action="/tracuuthuoc" style="margin-right: 25%; margin-left: 25%" method="post">
+    <form class="d-flex" method="get" action="/tracuuthuoc">
+        <div style="display: flex">
+            <input class="form-control me-2" name="q" type="text" placeholder="Nhập từ khóa...">
+            <button class="btn btn-primary" type="submit">Tìm</button>
+        </div>
+        <div class="row justify-content-center">
+            <table class="medicineTable">
+                <tr>
+                    <th>STT</th>
+                    <th>Tên thuốc</th>
+                    <th>Đơn vị</th>
+                    <th>Công dụng</th>
+                </tr>
+                {% for t in results %}
+                <tr>
+
+                    <td>{{ t.id }}</td>
+                    <td>
+                        <select class="form-select" name="nameMedicine">
+                            <option value="">{{ t.tenThuoc }}</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-select" name="medicineType">
+                            {% for m in medicines_unit %}
+                                <option value="">{{ m.tenDonVi }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        {{ t.congDung }}
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+     </form>
+</form>
+{% endblock %}

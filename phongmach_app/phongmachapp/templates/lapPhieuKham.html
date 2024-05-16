@@ -67,12 +67,18 @@
         </table>
     </div>
     <div class="col">
-        <button class="btn btn-primary">Thêm thuốc</button>
+        <button class="btn btn-primary" id="addMedicineBtn" type="button" >Thêm thuốc</button>
+
         <a class="btn btn-primary" href="/ketoathuoc"
            style="display: inline-block; padding: 6.5px 22px; text-align: center; ">
             <p style="margin: 0;">Lưu phiếu</p>
         </a>
+        <a class="btn btn-primary" href="/tracuuthuoc"
+           style="display: inline-block; padding: 6.5px 22px; text-align: center; ">
+            <p style="margin: 0;">Tra cứu thuốc</p>
+        </a>
 <!--        <button class="btn btn-primary" onclick=""></button>-->
     </div>
+    <script src="{{ url_for('static', filename='js/medicine.js') }}"></script>
 </form>
 {% endblock %}

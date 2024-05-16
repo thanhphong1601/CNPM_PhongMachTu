@@ -20,6 +20,16 @@ def user():
     return render_template('trangBacSi.html')
 
 
+@app.route('/tracuuthuoc')
+def sreach_medicine():
+    q = request.args.get('q')
+    # medi_id = request.args.get('thuoc_id')
+    medicines_unit = dao.load_medicines_unit()
+
+    results = dao.sreach_medicines(q=q)
+    return render_template('tracuuthuoc.html', results=results, medicines_unit=medicines_unit)
+
+
 @app.route('/lapphieukham', methods=['get', 'post'])
 def lapPhieuKham():
     thuocs = dao.load_medicines()
