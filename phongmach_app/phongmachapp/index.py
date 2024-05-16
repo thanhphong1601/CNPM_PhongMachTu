@@ -1,10 +1,12 @@
 from datetime import datetime
 
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, session
+from sqlalchemy import func
+
 import dao
-from phongmachapp import app, admin, login
+from phongmachapp import app, admin, login, db
 from flask_login import login_user, current_user, logout_user
-from phongmachapp.models import NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham, QuyDinh, ChiTietPhieuKham
+from phongmachapp.models import NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham, QuyDinh
 import cloudinary.uploader
 from decorators import loggedin, not_loggedin
 
@@ -15,35 +17,8 @@ def index():
     return render_template('index.html', categories=categories)
 
 
-@app.route('/bacsi')
-def user():
-    return render_template('trangBacSi.html')
-
-
-@app.route('/lapphieukham', methods=['get', 'post'])
-def lapPhieuKham():
-    thuocs = dao.load_medicines()
-    medicines_unit = dao.load_medicines_unit()
-
-    if request.method.__eq__('POST'):
-        print(request.form)
-    return render_template('lapPhieuKham.html', thuocs=thuocs, medicines_unit=medicines_unit)
-
-
-@app.route('/ketoathuoc')
-def keToaThuoc():
-    thuocs = dao.load_medicines()
-    note = dao.load_examination()
-    examinationDetails = dao.load_examination_details()
-
-    if request.method.__eq__('POST'):
-            print(request.form)
-    return render_template('thuocKeToa.html', thuocs=thuocs, note=note,
-                           examinationDetails=examinationDetails)
-
-
 @app.route('/benhnhan')
-def doctor():
+def user():
     return render_template('trangBenhNhan.html')
 
 
@@ -73,18 +48,27 @@ def dangKyLich():
             # lịch và danh sách đều đã có
             if danhSachKham_check:
                 # thêm chi tiết bệnh nhân
-                qd = QuyDinh.query.get(1)
-                soBenhNhan = qd.soBenhNhan
+                max = dao.get_max_benhNhan()
+                # print(danhSachKham_check.id)
+                result = dao.count_soBenhNhan(danhSachKham_check.id)
 
-                dao.add_detail_benhNhan(danhSachKham_check.id,
-                                        current_user.id,
-                                        hoTen=name,
-                                        gioiTinh=gender,
-                                        namSinh=nam_sinh,
-                                        soDienThoai=phone,
-                                        diaChi=address)
 
-                return redirect('/')
+                print(result)
+
+                #check số bệnh nhân cùng danh sách
+                if (result<=max):
+                    dao.add_detail_benhNhan(danhSachKham_check.id,
+                                            current_user.id,
+                                            hoTen=name,
+                                            gioiTinh=gender,
+                                            namSinh=nam_sinh,
+                                            soDienThoai=phone,
+                                            diaChi=address)
+
+                    return redirect('/')
+                else:
+                    #thông báo cho người dùng...
+                    return redirect('/')
             else:
                 # tạo danh sách mới
                 dao.add_danhSachKham(lichKham_check.id)
@@ -114,6 +98,33 @@ def dangKyLich():
             return redirect('/')
 
     return render_template('dangKyKham.html', genders=genders)
+
+
+@app.route('/yta')
+def trang_yTa():
+    return render_template('trangYTa.html')
+
+
+# @app.route('/danhsachkham')
+# def danhSachKham():
+#     return render_template('danhSachKham.html')
+
+
+@app.route('/danhsachkham', methods=['get', 'post'])
+def get_patient_list():
+    date = request.form.get('date')
+    ngayChon = datetime.strptime(date, '%d/%m/%Y')# Chuyển đổi sang định dạng date
+
+    # Xử lí dữ liệu ở đây
+    lichKham_check = LichKham.query.filter_by(ngayKham=ngayChon).first()
+    danh_sach_kham = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_check.id).all()
+    # print(danh_sach_kham)
+    patients = []
+    for item in danh_sach_kham:
+        patient_info = ChiTietDanhSachKham.query.filter_by(danhSachKham_id=item.id).all()
+        patients.extend(patient_info)
+    return render_template('danhsachkham.html', patients=patients)
+
 
 
 @app.route('/login', methods=['get', 'post'])
