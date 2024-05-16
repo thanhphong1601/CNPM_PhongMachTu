@@ -7,7 +7,7 @@
     <form method="post" class="form-floating mb-3 mt-3" action="/danhsachkham">
         <div>
             <label>Chọn Ngày</label>
-            <input name="date" id="datepicker"/>
+            <input name="date" id="datepicker" placeholder="Hãy chọn ngày cần xem danh sách..." required/>
             <script>
                 $('#datepicker').datepicker({
                     uiLibrary: 'bootstrap5',
@@ -28,6 +28,10 @@
             <button type="submit" class="btn btn-info">Kiểm tra</button>
         </div>
     </form>
+    {% if not patients %}
+        <h1>Hiện chưa có danh sách tương ứng cho ngày này!</h1>
+    {% else %}
+    <h1 class="text-center">Danh Sách Bệnh Nhân</h1>
     <table class="table">
         <tr>
             <th>STT</th>
@@ -47,6 +51,8 @@
         </tr>
         {% endfor %}
     </table>
+    <button class="btn btn-success">Lưu Danh Sách</button>
+    {% endif %}
 </div>
 
 {% endblock %}

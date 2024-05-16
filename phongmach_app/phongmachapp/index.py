@@ -41,10 +41,11 @@ def dangKyLich():
         # print(ngay_kham)
         # print(date)
 
-        lichKham_check = LichKham.query.filter_by(ngayKham=ngay_kham).first()
+        lichKham_check = dao.get_lichKham_by_date(ngay_kham)
         if lichKham_check:
-            danhSachKham_check = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_check.id).first()
-
+            # danhSachKham_check = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_check.id).first()
+            danhSachKham_check = dao.get_danhSachKham_by_lichKhamID(lichKham_check.id)
+            # print(danhSachKham_check)
             # lịch và danh sách đều đã có
             if danhSachKham_check:
                 # thêm chi tiết bệnh nhân
@@ -52,11 +53,10 @@ def dangKyLich():
                 # print(danhSachKham_check.id)
                 result = dao.count_soBenhNhan(danhSachKham_check.id)
 
+                # print(result)
 
-                print(result)
-
-                #check số bệnh nhân cùng danh sách
-                if (result<=max):
+                # check số bệnh nhân cùng danh sách
+                if (result <= max):
                     dao.add_detail_benhNhan(danhSachKham_check.id,
                                             current_user.id,
                                             hoTen=name,
@@ -67,7 +67,7 @@ def dangKyLich():
 
                     return redirect('/')
                 else:
-                    #thông báo cho người dùng...
+                    # thông báo cho người dùng...
                     return redirect('/')
             else:
                 # tạo danh sách mới
@@ -84,10 +84,11 @@ def dangKyLich():
 
         else:
             dao.add_lichKham(ngay_kham)
-            lichKham_check_new = LichKham.query.filter_by(ngayKham=ngay_kham).first()
-            dao.add_danhSachKham(lichKham_check_new.id)
-            danhSachKham_check_new = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_check_new.id).first()
-            dao.add_detail_benhNhan(danhSachKham_check_new.id,
+            lichKham_new = dao.add_lichKham(ngay_kham)
+            dao.add_danhSachKham(lichKham_new.id)
+            # danhSachKham_new = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_new.id).first()
+            danhSachKham_new = dao.add_danhSachKham(lichKham_new.id)
+            dao.add_detail_benhNhan(danhSachKham_new.id,
                                     current_user.id,
                                     hoTen=name,
                                     gioiTinh=gender,
@@ -112,19 +113,31 @@ def trang_yTa():
 
 @app.route('/danhsachkham', methods=['get', 'post'])
 def get_patient_list():
-    date = request.form.get('date')
-    ngayChon = datetime.strptime(date, '%d/%m/%Y')# Chuyển đổi sang định dạng date
-
-    # Xử lí dữ liệu ở đây
-    lichKham_check = LichKham.query.filter_by(ngayKham=ngayChon).first()
-    danh_sach_kham = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_check.id).all()
-    # print(danh_sach_kham)
     patients = []
-    for item in danh_sach_kham:
-        patient_info = ChiTietDanhSachKham.query.filter_by(danhSachKham_id=item.id).all()
-        patients.extend(patient_info)
+    if request.method.__eq__('POST'):
+        date = request.form.get('date')
+        ngayChon = datetime.strptime(date, '%d/%m/%Y')# Chuyển đổi sang định dạng date
+
+        # Xử lí dữ liệu
+        lichKham_check = LichKham.query.filter_by(ngayKham=ngayChon).first()
+        if lichKham_check:
+            danh_sach_kham = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_check.id).all()
+            # print(danh_sach_kham)
+            for p in danh_sach_kham:
+                patient_info = ChiTietDanhSachKham.query.filter_by(danhSachKham_id=p.id).all()
+                patients.extend(patient_info)
+
     return render_template('danhsachkham.html', patients=patients)
 
+
+@app.route('/thungan')
+def trang_ThuNgan():
+    return render_template('trangThuNgan.html')
+
+
+@app.route('/tracuuhoadon')
+def traCuuHoaDon():
+    return render_template('hoaDon.html')
 
 
 @app.route('/login', methods=['get', 'post'])
@@ -132,6 +145,7 @@ def login_my_user():
     if current_user.is_authenticated:
         return redirect('/')
     err_msg = ''
+    done_msg = request.args.get('done_msg')
     if request.method.__eq__('POST'):
         username = request.form.get('username')
         password = request.form.get('password')
@@ -142,7 +156,7 @@ def login_my_user():
             return redirect('/')
         else:
             err_msg = 'Tài khoản hoặc mật khẩu không đúng'
-    return render_template('login.html', err_msg=err_msg)
+    return render_template('login.html', err_msg=err_msg, done_msg=done_msg)
 
 
 @app.route('/logout', methods=['get'])
@@ -154,7 +168,7 @@ def logout_my_user():
 @app.route('/register', methods=['get', 'post'])
 @loggedin
 def register_user():
-    err_msg = ''
+    done_msg = 'Đã tạo tại khoản thành công'
     if request.method.__eq__('POST'):
         username = request.form.get('username')
         if NguoiDung.query.filter(NguoiDung.username.__eq__(username)).first():
@@ -173,7 +187,6 @@ def register_user():
                              username=username,
                              password=password,
                              avatar=avatar_path)
-
                 return redirect('/login')
             else:
                 err_msg = 'Mật khẩu xác nhận không đúng'

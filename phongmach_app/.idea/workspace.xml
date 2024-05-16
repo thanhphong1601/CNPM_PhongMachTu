@@ -5,16 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="548c8e9c-8088-45aa-977f-695e8a1564be" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/phongmachapp/decorators.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/phongmach_app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/phongmach_app.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/phongmachapp/templates/hoaDon.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/phongmachapp/templates/trangThuNgan.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phongmachapp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phongmachapp/dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/dao.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phongmachapp/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/index.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phongmachapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phongmachapp/templates/dangKyKham.html" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/templates/dangKyKham.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/templates/danhSachKham.html" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/templates/danhSachKham.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phongmachapp/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/templates/login.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +24,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -40,15 +40,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/CNPM_PhongMach_1/CNPM_PhongMachTu/phongmach_app&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "E:/CNPM_PhongMach_1/CNPM_PhongMachTu/phongmach_app",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Python.index">
     <configuration name="index" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="phongmach_app" />
