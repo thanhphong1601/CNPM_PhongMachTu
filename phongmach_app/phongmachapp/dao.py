@@ -1,6 +1,9 @@
 import json, hashlib
-from phongmachapp.models import (Thuoc, LoaiThuoc, DonViThuoc, NguoiDung, GioiTinh, ChiTietDanhSachKham,
-                                 LichKham, DanhSachKham, ChiTietPhieuKham, PhieuKham)
+
+from sqlalchemy import func
+
+from phongmachapp.models import (Thuoc, LoaiThuoc, DonViThuoc, NguoiDung, PhieuKham,
+                                 ChiTietPhieuKham, GioiTinh, ChiTietDanhSachKham, LichKham, DanhSachKham, QuyDinh)
 from phongmachapp import app, db
 
 
@@ -82,6 +85,27 @@ def add_danhSachKham(lichKham_id):
     danhSachKham = DanhSachKham(lichNgayKham_id=lichKham_id)
     db.session.add(danhSachKham)
     db.session.commit()
+
+
+def count_soBenhNhan(id):
+    return db.session.query(func.count(ChiTietDanhSachKham.id))\
+        .filter(ChiTietDanhSachKham.danhSachKham_id == id)\
+        .scalar()
+
+
+def get_max_benhNhan():
+    qd = QuyDinh.query.get(1)
+    soBenhNhan = qd.soBenhNhan
+    return soBenhNhan
+
+
+def get_lichKham_by_date(date):
+    return LichKham.query.filter_by(ngayKham=date).first()
+
+
+def get_danhSachKham_by_lichKhamID(id):
+    return DanhSachKham.query.filter_by(lichNgayKham_id=id).first()
+
 
 
 if __name__ == '__main__':

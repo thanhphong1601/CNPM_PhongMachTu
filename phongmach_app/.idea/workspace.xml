@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="548c8e9c-8088-45aa-977f-695e8a1564be" name="Changes" comment="">
+<<<<<<< HEAD
       <change afterPath="$PROJECT_DIR$/phongmachapp/templates/traCuuThuoc.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/phongmach_app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/phongmach_app.iml" afterDir="false" />
@@ -15,6 +16,17 @@
       <change beforePath="$PROJECT_DIR$/phongmachapp/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/templates/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phongmachapp/templates/lapPhieuKham.html" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/templates/lapPhieuKham.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phongmachapp/templates/trangBacSi.html" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/templates/trangBacSi.html" afterDir="false" />
+=======
+      <change afterPath="$PROJECT_DIR$/phongmachapp/templates/hoaDon.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/phongmachapp/templates/trangThuNgan.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/dao.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/index.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/templates/danhSachKham.html" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/templates/danhSachKham.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/templates/login.html" afterDir="false" />
+>>>>>>> 1596d180fb7e27be6e9e50bc09656c7255eca376
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +59,11 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
+<<<<<<< HEAD
     "last_opened_file_path": "D:/CNPM/CNPM_PhongMachTu/phongmach_app",
+=======
+    "last_opened_file_path": "E:/CNPM_PhongMach_1/CNPM_PhongMachTu/phongmach_app",
+>>>>>>> 1596d180fb7e27be6e9e50bc09656c7255eca376
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
