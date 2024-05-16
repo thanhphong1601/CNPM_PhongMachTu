@@ -1,7 +1,7 @@
 from flask_admin import Admin, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView
-from phongmachapp.models import Thuoc, DonViThuoc, LoaiThuoc, VaiTroNguoiDung, NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham
+from phongmachapp.models import Thuoc, DonViThuoc, LoaiThuoc, VaiTroNguoiDung, NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham, PhieuKham, ChiTietPhieuKham, HoaDon
 from phongmachapp import app, db
 from flask_login import logout_user, current_user
 from flask import redirect
@@ -48,7 +48,7 @@ class MyLoaiThuocView(AuthenticatedView):
 
 
 class MyUserView(ModelView):
-        column_list = ['id', 'hoTen', 'username', 'password', 'vaiTro_NguoiDung']
+        column_list = ['id', 'hoTen', 'username', 'password', 'vaiTro_NguoiDung', 'phieuKhams', 'chiTietDanhSachKhams', 'hoaDons']
 
 
 class MyLichView(ModelView):
@@ -61,6 +61,46 @@ class MyDanhSachKham(ModelView):
 
 class MyChiTietDanhSachKham(ModelView):
         column_list = ['id', 'danhSach_id', 'nguoiDung_id', 'hoTen', 'namSinh']
+
+
+class MyPhieuKhamView(AuthenticatedView):
+        column_list = ['id', 'benhNhan_id', 'tenBenhNhan', 'trieuChung', 'duDoanBenh', 'ngayKham', 'chiTietPhieuKhams', 'hoaDon']
+        column_searchable_list = ['tenBenhNhan']
+        column_editable_list = [ 'tenBenhNhan', 'trieuChung', 'duDoanBenh']
+        column_labels = {
+                'tenBenhNhan': 'Tên bệnh nhân',
+                'trieuChung': 'Triệu Chứng',
+                'duDoanBenh': 'Dự Đoán',
+                'ngayKham': 'Ngày Khám',
+                'chiTietPhieuKhams': 'Các phiếu khám',
+                'hoaDon': 'Hóa Đơn'
+        }
+
+
+class MyChiTietPhieuKhamView(AuthenticatedView):
+        column_list = ['id', 'soLuong', 'cachDung', 'phieuKham_id', 'thuoc_id']
+        column_searchable_list = ['id']
+        column_editable_list = ['soLuong', 'cachDung']
+        column_labels = {
+                'id': 'Mã',
+                'soLuong': 'Số lượng',
+                'phieuKham_id': 'Mã phiếu khám',
+                'thuoc_id': 'Mã Thuốc'
+        }
+
+
+class MyHoaDonView(AuthenticatedView):
+        column_list = ['id', 'ngayKham', 'tienKham', 'tienThuoc', 'nguoiDung_id', 'phieuKham_id']
+        column_searchable_list = ['ngayKham', 'id', 'nguoiDung_id']
+        column_editable_list = ['tienKham', 'tienThuoc']
+        column_labels = {
+                'id': 'Mã Hóa Đơn',
+                'ngayKham': 'Ngày Khám',
+                'tienKham': 'Tiền Khám',
+                'tienThuoc': 'Tiền thuốc',
+                'nguoiDung_id': 'Mã bệnh nhân',
+                'phieuKham_id': 'Mã Phiếu Khám'
+        }
 
 
 class StatsView(BaseView):
@@ -91,6 +131,9 @@ admin.add_view(MyUserView(NguoiDung, db.session))
 admin.add_view(MyLichView(LichKham, db.session))
 admin.add_view(MyDanhSachKham(DanhSachKham, db.session))
 admin.add_view(MyChiTietDanhSachKham(ChiTietDanhSachKham, db.session))
+admin.add_view(MyPhieuKhamView(PhieuKham, db.session))
+admin.add_view(MyChiTietPhieuKhamView(ChiTietPhieuKham, db.session))
+admin.add_view(MyHoaDonView(HoaDon, db.session))
 
 admin.add_view(StatsView(name="Thống Kê"))
 admin.add_view(LogoutView(name="Đăng Xuất"))

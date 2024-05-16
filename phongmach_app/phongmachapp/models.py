@@ -52,9 +52,6 @@ class PhieuKham(Base):
     chiTietPhieuKhams = relationship('ChiTietPhieuKham', backref='phieukham', lazy=True)
     hoaDon = relationship('HoaDon', backref='phieukham', lazy=True)
 
-    def __str__(self):
-        return self.hoTen
-
 
 class DonViThuoc(Base):
     tenDonVi = Column(String(50), nullable=False)
@@ -104,6 +101,14 @@ class HoaDon(Base): # cần có khóa ngoại là người dùng cụ thể lầ
     tienThuoc = Column(Float, default=0)
     nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
     phieuKham_id = Column(Integer, ForeignKey(PhieuKham.id), nullable=False)
+    da_thanh_toan = Column(Boolean, default=False)
+
+    # def tinh_tong_tien_thuoc(self, session):
+    #     total = 0
+    #     chiTietPhieuKhams = session.query(ChiTietPhieuKham).filter_by(phieuKham_id=self.phieuKham_id).all()
+    #     for ct in chiTietPhieuKhams:
+    #         total += ct.soLuong * ct.thuoc.price  # Giả sử `thuoc` có thuộc tính `price`
+    #     self.tienThuoc = total
 
 
 class LichKham(Base): # chứa ngày khám để danh sách khám nó lấy về cái id ngày khám đó
@@ -146,20 +151,20 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         #
-        # loaiThuoc1 = LoaiThuoc(tenLoai="Thuốc Ngủ")
-        # loaiThuoc2 = LoaiThuoc(tenLoai="Thuốc Nhứt Đầu")
-        #
-        # qd = QuyDinh(soTienKham=100000, soLoaiThuoc=30, soBenhNhan=40)
-        # db.session.add(qd)
-        # db.session.commit()
+        loaiThuoc1 = LoaiThuoc(tenLoai="Thuốc Ngủ")
+        loaiThuoc2 = LoaiThuoc(tenLoai="Thuốc Nhứt Đầu")
 
-        # import hashlib
-        # u = NguoiDung(hoTen='Quản Trị Viên',
-        #               anhDaiDien='https://res.cloudinary.com/dstjar2iy/image/upload/v1712391157/lwocwuc4opc6c9kl6fcw.jpg',
-        #               username='admin',
-        #               password=str(hashlib.md5("1".encode('utf-8')).hexdigest()),
-        #               vaiTro_NguoiDung=VaiTroNguoiDung.ADMIN)
-        #
-        # db.session.add(u)
-        # db.session.commit()
+        qd = QuyDinh(soTienKham=100000, soLoaiThuoc=30, soBenhNhan=40)
+        db.session.add(qd)
+        db.session.commit()
+
+        import hashlib
+        u = NguoiDung(hoTen='Quản Trị Viên',
+                      anhDaiDien='https://res.cloudinary.com/dstjar2iy/image/upload/v1712391157/lwocwuc4opc6c9kl6fcw.jpg',
+                      username='admin',
+                      password=str(hashlib.md5("1".encode('utf-8')).hexdigest()),
+                      vaiTro_NguoiDung=VaiTroNguoiDung.ADMIN)
+
+        db.session.add(u)
+        db.session.commit()
 

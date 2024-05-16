@@ -1,12 +1,13 @@
 from datetime import datetime
 
-from flask import render_template, request, redirect, session
+from flask import render_template, request, redirect, session, jsonify
 from sqlalchemy import func
 
 import dao
 from phongmachapp import app, admin, login, db
 from flask_login import login_user, current_user, logout_user
-from phongmachapp.models import NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham, QuyDinh
+from phongmachapp.models import NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham, QuyDinh, HoaDon, \
+    ChiTietPhieuKham
 import cloudinary.uploader
 from decorators import loggedin, not_loggedin
 
@@ -137,7 +138,28 @@ def trang_ThuNgan():
 
 @app.route('/tracuuhoadon')
 def traCuuHoaDon():
-    return render_template('hoaDon.html')
+    #get danh sach hoa don
+    # hoaDons = dao.load_hoaDon()
+    find = request.args.get('find')
+    # hoaDons = dao.load_hoaDon()
+    hoaDons = HoaDon.query.join(NguoiDung, HoaDon.nguoiDung_id.__eq__(NguoiDung.id)).filter(NguoiDung.hoTen.contains(find)).all()
+    # invoices = db_session.query(HoaDon).join(NguoiDung).filter(NguoiDung.hoTen.ilike(f'%{search_query}%')).all()
+
+    return render_template('hoaDon.html', hoaDons=hoaDons)
+
+
+# @app.route('/update_payment_status', methods=['post'])
+# def update_payment_status():
+#     data = request.json
+#     hoa_don_id = data.get('hoa_don_id')
+#     hoa_don = HoaDon.query().filter_by(id=hoa_don_id).first()
+#
+#     if hoa_don:
+#         hoa_don.da_thanh_toan = not hoa_don.da_thanh_toan  # đảo trạng thái
+#         db.session.commit()
+#         return jsonify({'status': 'success', 'da_thanh_toan': hoa_don.da_thanh_toan})
+#
+#     return jsonify({'status': 'error', 'message': 'Hóa đơn không tồn tại'}), 404
 
 
 @app.route('/login', methods=['get', 'post'])
@@ -168,7 +190,7 @@ def logout_my_user():
 @app.route('/register', methods=['get', 'post'])
 @loggedin
 def register_user():
-    done_msg = 'Đã tạo tại khoản thành công'
+    err_msg = ''
     if request.method.__eq__('POST'):
         username = request.form.get('username')
         if NguoiDung.query.filter(NguoiDung.username.__eq__(username)).first():
