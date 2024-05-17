@@ -6,8 +6,8 @@ from sqlalchemy import func
 import dao
 from phongmachapp import app, admin, login, db
 from flask_login import login_user, current_user, logout_user
-from phongmachapp.models import (NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham, QuyDinh, HoaDon, Thuoc,
-                                 ChiTietPhieuKham)
+from phongmachapp.models import NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham, QuyDinh, HoaDon, \
+    ChiTietPhieuKham
 import cloudinary.uploader
 from decorators import loggedin, not_loggedin, thuNgan_loggedin
 
@@ -126,7 +126,6 @@ def dangKyLich():
             dao.add_lichKham(ngay_kham)
             lichKham_new = dao.get_lichKham_by_date(ngay_kham)
             dao.add_danhSachKham(lichKham_new.id)
-            # danhSachKham_new = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_new.id).first()
             danhSachKham_new = dao.get_danhSachKham_by_lichKhamID(lichKham_new.id)
             dao.add_detail_benhNhan(danhSachKham_new.id,
                                     current_user.id,
@@ -146,11 +145,6 @@ def trang_yTa():
     return render_template('trangYTa.html')
 
 
-# @app.route('/danhsachkham')
-# def danhSachKham():
-#     return render_template('danhSachKham.html')
-
-
 @app.route('/danhsachkham', methods=['get', 'post'])
 def get_patient_list():
     patients = []
@@ -159,34 +153,27 @@ def get_patient_list():
         ngayChon = datetime.strptime(date, '%d/%m/%Y')# Chuyển đổi sang định dạng date
 
         # Xử lí dữ liệu
-        lichKham_check = LichKham.query.filter_by(ngayKham=ngayChon).first()
+        lichKham_check = dao.get_lichKham_by_date(ngayChon)
         if lichKham_check:
-            danh_sach_kham = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_check.id).all()
-            # print(danh_sach_kham)
-            for p in danh_sach_kham:
-                patient_info = ChiTietDanhSachKham.query.filter_by(danhSachKham_id=p.id).all()
-                patients.extend(patient_info)
+            danhSachKham = dao.get_danhSachKham_by_lichKhamID(lichKham_check.id)
+            print(danhSachKham)
+            patient_infos = dao.get_patient_list_info_by_listID(danhSachKham.id)
+            patients.extend(patient_infos)
 
     return render_template('danhsachkham.html', patients=patients)
 
 
 @app.route('/thungan')
-@thuNgan_loggedin
+# @thuNgan_loggedin
 def trang_ThuNgan():
     return render_template('trangThuNgan.html')
 
 
 @app.route('/tracuuhoadon')
-@thuNgan_loggedin
+# @thuNgan_loggedin
 def traCuuHoaDon():
-    #get danh sach hoa don
-    # hoaDons = dao.load_hoaDon()
     find = request.args.get('find')
-    if find:
-        hoaDons = HoaDon.query.join(NguoiDung, HoaDon.nguoiDung_id.__eq__(NguoiDung.id)).filter(NguoiDung.hoTen.contains(find)).all()
-    else:
-        hoaDons = dao.load_hoaDon()
-    # invoices = db_session.query(HoaDon).join(NguoiDung).filter(NguoiDung.hoTen.ilike(f'%{search_query}%')).all()
+    hoaDons = dao.load_hoaDon(find)
 
     return render_template('hoaDon.html', hoaDons=hoaDons)
 
@@ -221,7 +208,7 @@ def login_my_user():
             return redirect('/')
         else:
             err_msg = 'Tài khoản hoặc mật khẩu không đúng'
-    return render_template('login.html', err_msg=err_msg, done_msg=done_msg)
+    return render_template('login.html', err_msg=err_msg)
 
 
 @app.route('/logout', methods=['get'])

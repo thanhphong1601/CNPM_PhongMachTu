@@ -3,10 +3,10 @@
 {% block title %}Tra Cứu Hóa Đơn{% endblock %}
 {% block content %}
 <h1 style="text-align: center; margin-bottom: 80px">Tra Cứu Hóa Đơn</h1>
-<div style="margin-right: 5%; margin-left: 15%">
+<div style="margin-right: 15%; margin-left: 15%">
     <form method="get" class="form-floating mb-3 mt-3" action="/tracuuhoadon">
         <div>
-            <input class="form-control" placeholder="Tìm mã hóa đơn..." name="find">
+            <input class="form-control" placeholder="Tìm tên bệnh nhân..." name="find">
         </div>
 
         <div class="text-center mt-1">
@@ -23,6 +23,7 @@
         <tr>
             <th>STT</th>
             <th>Họ Tên Bệnh Nhân</th>
+            <th>Họ Tên Người Đăng Ký</th>
             <th>Tiền Khám</th>
             <th>Tiền Thuốc</th>
             <th>Tổng tiền</th>
@@ -30,6 +31,7 @@
         {% for h in hoaDons %}
         <tr>
             <td>{{ h.id }}</td>
+            <td>{{ h.hoTenBenhNhan }}</td>
             <td>{{ h.nguoidung }}</td>
             <td>{{ "{:,.0f}".format(h.tienKham) }} VNĐ</td>
             <td>{{ "{:,.0f}".format(h.tienThuoc) }} VNĐ</td>
