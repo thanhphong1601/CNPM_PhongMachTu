@@ -8,6 +8,7 @@ from phongmachapp.models import (Thuoc, DonViThuoc, LoaiThuoc, VaiTroNguoiDung, 
 from phongmachapp import app, db, dao
 from flask_login import logout_user, current_user
 from flask import redirect, request
+from flask_admin.menu import MenuCategory
 
 
 class AuthenticatedView(ModelView):
@@ -137,6 +138,8 @@ class StatsView2(BaseView):
                 return current_user.is_authenticated and current_user.vaiTro_NguoiDung == VaiTroNguoiDung.ADMIN
 
 
+
+
 class LogoutView(BaseView):
         @expose('/')
         def index(self):
@@ -156,10 +159,10 @@ class MyAdminIndexView(AdminIndexView):
 
 
 
-admin = Admin(app, name="Phong Mach Tu", template_mode="bootstrap4", index_view=MyAdminIndexView())
-admin.add_view(MyDonViThuocView(DonViThuoc, db.session, name="Đơn Vị Thuốc"))
-admin.add_view(MyThuocView(Thuoc, db.session, name="Thuốc"))
-admin.add_view(MyLoaiThuocView(LoaiThuoc, db.session, name="Loại Thuốc"))
+admin = Admin(app, name="Phòng Mạch Tư", template_mode="bootstrap4", index_view=MyAdminIndexView())
+admin.add_view(MyDonViThuocView(DonViThuoc, db.session, name="Đơn Vị Thuốc", category="Quản Lý Thuốc"))
+admin.add_view(MyThuocView(Thuoc, db.session, name="Thuốc", category="Quản Lý Thuốc"))
+admin.add_view(MyLoaiThuocView(LoaiThuoc, db.session, name="Loại Thuốc", category="Quản Lý Thuốc"))
 admin.add_view(MyUserView(NguoiDung, db.session))
 admin.add_view(MyLichView(LichKham, db.session))
 admin.add_view(MyDanhSachKham(DanhSachKham, db.session))
@@ -169,6 +172,7 @@ admin.add_view(MyChiTietPhieuKhamView(ChiTietPhieuKham, db.session))
 admin.add_view(MyHoaDonView(HoaDon, db.session))
 admin.add_view(MyQuyDinhView(QuyDinh, db.session, name='Quy Định'))
 
-admin.add_view(StatsView(name="Thống Kê"))
-admin.add_view(StatsView2(name="Thống Kê 2"))
+
+admin.add_view(StatsView(name="Thống Kê Doanh Thu", category="Thống Kê"))
+admin.add_view(StatsView2(name="Thống Kê Tần Suất", category="Thống Kê"))
 admin.add_view(LogoutView(name="Đăng Xuất"))
