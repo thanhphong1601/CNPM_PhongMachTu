@@ -1,8 +1,10 @@
 import json, hashlib
+from datetime import datetime
 
 from sqlalchemy import func
 
-from phongmachapp.models import Thuoc, LoaiThuoc, DonViThuoc, NguoiDung, GioiTinh, ChiTietDanhSachKham, LichKham, DanhSachKham, QuyDinh
+from phongmachapp.models import (Thuoc, LoaiThuoc, DonViThuoc, NguoiDung, GioiTinh, ChiTietDanhSachKham, LichKham,
+                                 DanhSachKham, QuyDinh, HoaDon, ChiTietPhieuKham)
 from phongmachapp import app, db
 
 
@@ -78,6 +80,34 @@ def get_danhSachKham_by_lichKhamID(id):
     return DanhSachKham.query.filter_by(lichNgayKham_id=id).first()
 
 
+def tinh_tong_tien_thuoc(phieuKham_id):
+        total = 0
+        # danh sách các chi tiết phiếu khám thuộc 1 phiếu khám có id = id phiếu khám ở hóa đơn
+        chiTietPhieuKhams = ChiTietPhieuKham.query.filter_by(phieuKham_id=phieuKham_id).all()
+        for c in chiTietPhieuKhams:
+            total += c.soLuong * c.thuoc.price
+
+        return total
+
+
+def load_hoaDon(find=None):
+    query = HoaDon.query
+    #
+    # if find:
+    #     q = NguoiDung.query.filter(NguoiDung.hoTen.contains(find))
+    #     for u in q:
+    #         query = query.filter(HoaDon.nguoiDung_id.__eq__(q))
+
+    return query.all()
+
+
+def stats_revenue_by_period(year=datetime.now().year, period='month'):
+    query = db.session.query(func.extract(period, HoaDon.ngayKham), func.sum(HoaDon.tienKham + HoaDon.tienThuoc))\
+        .filter(func.extract('year', HoaDon.ngayKham).__eq__(year))
+
+    return query.group_by(func.extract(period, HoaDon.ngayKham)).all()
+
 
 if __name__ == '__main__':
-    print(load_categories())
+    with app.app_context():
+        print(stats_revenue_by_period())

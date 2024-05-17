@@ -9,7 +9,7 @@ from flask_login import login_user, current_user, logout_user
 from phongmachapp.models import NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham, QuyDinh, HoaDon, \
     ChiTietPhieuKham
 import cloudinary.uploader
-from decorators import loggedin, not_loggedin
+from decorators import loggedin, not_loggedin, thuNgan_loggedin
 
 
 @app.route('/')
@@ -110,7 +110,8 @@ def dangKyLich():
             else:
                 # tạo danh sách mới
                 dao.add_danhSachKham(lichKham_check.id)
-                dao.add_detail_benhNhan(danhSachKham_check.id,
+                danhSachKham_new = dao.get_danhSachKham_by_lichKhamID(lichKham_check.id)
+                dao.add_detail_benhNhan(danhSachKham_new.id,
                                         current_user.id,
                                         hoTen=name,
                                         gioiTinh=gender,
@@ -120,12 +121,13 @@ def dangKyLich():
 
                 return redirect('/')
 
+        #không lịch không ds
         else:
             dao.add_lichKham(ngay_kham)
-            lichKham_new = dao.add_lichKham(ngay_kham)
+            lichKham_new = dao.get_lichKham_by_date(ngay_kham)
             dao.add_danhSachKham(lichKham_new.id)
             # danhSachKham_new = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_new.id).first()
-            danhSachKham_new = dao.add_danhSachKham(lichKham_new.id)
+            danhSachKham_new = dao.get_danhSachKham_by_lichKhamID(lichKham_new.id)
             dao.add_detail_benhNhan(danhSachKham_new.id,
                                     current_user.id,
                                     hoTen=name,
@@ -169,17 +171,21 @@ def get_patient_list():
 
 
 @app.route('/thungan')
+@thuNgan_loggedin
 def trang_ThuNgan():
     return render_template('trangThuNgan.html')
 
 
 @app.route('/tracuuhoadon')
+@thuNgan_loggedin
 def traCuuHoaDon():
     #get danh sach hoa don
     # hoaDons = dao.load_hoaDon()
     find = request.args.get('find')
-    # hoaDons = dao.load_hoaDon()
-    hoaDons = HoaDon.query.join(NguoiDung, HoaDon.nguoiDung_id.__eq__(NguoiDung.id)).filter(NguoiDung.hoTen.contains(find)).all()
+    if find:
+        hoaDons = HoaDon.query.join(NguoiDung, HoaDon.nguoiDung_id.__eq__(NguoiDung.id)).filter(NguoiDung.hoTen.contains(find)).all()
+    else:
+        hoaDons = dao.load_hoaDon()
     # invoices = db_session.query(HoaDon).join(NguoiDung).filter(NguoiDung.hoTen.ilike(f'%{search_query}%')).all()
 
     return render_template('hoaDon.html', hoaDons=hoaDons)

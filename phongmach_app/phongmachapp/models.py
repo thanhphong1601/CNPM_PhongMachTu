@@ -97,9 +97,10 @@ class ChiTietPhieuKham(Base):
 
 class HoaDon(Base): # cần có khóa ngoại là người dùng cụ thể lần lượt là bệnh nhân và phiếu khám
     ngayKham = Column(Date, default=date.today, nullable=False)
+    hoTenBenhNhan = Column(String(50), nullable=False)
     tienKham = Column(Float, default=0)
     tienThuoc = Column(Float, default=0)
-    nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
+    nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False) #người đăng ký
     phieuKham_id = Column(Integer, ForeignKey(PhieuKham.id), nullable=False)
     da_thanh_toan = Column(Boolean, default=False)
 
