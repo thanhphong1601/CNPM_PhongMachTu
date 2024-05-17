@@ -10,9 +10,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phongmachapp/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phongmachapp/dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/dao.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phongmachapp/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/decorators.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phongmachapp/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/index.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phongmachapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phongmachapp/templates/traCuuThuoc.html" beforeDir="false" afterPath="$PROJECT_DIR$/phongmachapp/templates/traCuuThuoc.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +49,7 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python.dao">
+  <component name="RunManager" selected="Python.index">
     <configuration name="dao" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="phongmach_app" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -115,9 +115,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.dao" />
         <item itemvalue="Python.index" />
         <item itemvalue="Python.models" />
+        <item itemvalue="Python.dao" />
       </list>
     </recent_temporary>
   </component>

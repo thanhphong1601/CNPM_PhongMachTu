@@ -3,7 +3,8 @@ from datetime import datetime
 
 from sqlalchemy import func
 
-from phongmachapp.models import (Thuoc, LoaiThuoc, DonViThuoc, NguoiDung, GioiTinh, ChiTietDanhSachKham, LichKham,
+from phongmachapp.models import (Thuoc, LoaiThuoc, DonViThuoc, NguoiDung, GioiTinh, PhieuKham, ChiTietPhieuKham,
+                                 ChiTietDanhSachKham, LichKham,
                                  DanhSachKham, QuyDinh, HoaDon, ChiTietPhieuKham)
 from phongmachapp import app, db
 
@@ -106,6 +107,31 @@ def stats_revenue_by_period(year=datetime.now().year, period='month'):
         .filter(func.extract('year', HoaDon.ngayKham).__eq__(year))
 
     return query.group_by(func.extract(period, HoaDon.ngayKham)).all()
+
+
+def load_medicines():
+    return Thuoc.query.all()
+
+
+def load_medicines_unit():
+    return DonViThuoc.query.all()
+
+
+def load_examination():
+    return PhieuKham.query.all()
+
+
+def load_examination_details():
+    return ChiTietPhieuKham.query.all()
+
+
+def sreach_medicines(q=None):
+    query = Thuoc.query
+
+    if q:
+        query = query.filter(Thuoc.tenThuoc.contains(q))
+
+    return query.all()
 
 
 if __name__ == '__main__':

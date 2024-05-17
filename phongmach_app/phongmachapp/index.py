@@ -6,8 +6,8 @@ from sqlalchemy import func
 import dao
 from phongmachapp import app, admin, login, db
 from flask_login import login_user, current_user, logout_user
-from phongmachapp.models import NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham, QuyDinh, HoaDon, \
-    ChiTietPhieuKham
+from phongmachapp.models import (NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham, QuyDinh, HoaDon, Thuoc,
+                                 ChiTietPhieuKham)
 import cloudinary.uploader
 from decorators import loggedin, not_loggedin, thuNgan_loggedin
 
