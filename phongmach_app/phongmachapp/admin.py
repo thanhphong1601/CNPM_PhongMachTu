@@ -6,12 +6,10 @@ from phongmachapp import app, db
 from flask_login import logout_user, current_user
 from flask import redirect
 
-#
+
 class AuthenticatedView(ModelView):
         def is_accessible(self):
                 return current_user.is_authenticated and current_user.vaiTro_NguoiDung == VaiTroNguoiDung.ADMIN
-
-
 
 
 class MyThuocView(AuthenticatedView):
@@ -26,8 +24,6 @@ class MyThuocView(AuthenticatedView):
                 'price': 'Giá',
                 'loaiThuocs': 'Loại Thuốc'
         }
-
-
 
 
 class MyDonViThuocView(AuthenticatedView):
@@ -120,7 +116,6 @@ class LogoutView(BaseView):
 
         def is_accessible(self):
                 return current_user.is_authenticated and current_user.vaiTro_NguoiDung == VaiTroNguoiDung.ADMIN
-
 
 
 admin = Admin(app, name="Phong Mach Tu", template_mode="bootstrap4")

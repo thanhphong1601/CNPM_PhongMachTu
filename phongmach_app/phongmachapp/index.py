@@ -18,6 +18,43 @@ def index():
     return render_template('index.html', categories=categories)
 
 
+@app.route('/bacsi')
+def doctor():
+    return render_template('trangBacSi.html')
+
+
+@app.route('/tracuuthuoc')
+def sreach_medicine():
+    q = request.args.get('q')
+    # medi_id = request.args.get('thuoc_id')
+    medicines_unit = dao.load_medicines_unit()
+
+    results = dao.sreach_medicines(q=q)
+    return render_template('tracuuthuoc.html', results=results, medicines_unit=medicines_unit)
+
+
+@app.route('/lapphieukham', methods=['get', 'post'])
+def lapPhieuKham():
+    thuocs = dao.load_medicines()
+    medicines_unit = dao.load_medicines_unit()
+
+    if request.method.__eq__('POST'):
+        print(request.form)
+    return render_template('lapPhieuKham.html', thuocs=thuocs, medicines_unit=medicines_unit)
+
+
+@app.route('/ketoathuoc')
+def keToaThuoc():
+    thuocs = dao.load_medicines()
+    note = dao.load_examination()
+    examinationDetails = dao.load_examination_details()
+
+    if request.method.__eq__('POST'):
+            print(request.form)
+    return render_template('thuocKeToa.html', thuocs=thuocs, note=note,
+                           examinationDetails=examinationDetails)
+
+
 @app.route('/benhnhan')
 def user():
     return render_template('trangBenhNhan.html')
