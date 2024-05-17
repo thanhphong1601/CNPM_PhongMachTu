@@ -115,15 +115,13 @@ class HoaDon(Base): # cần có khóa ngoại là người dùng cụ thể lầ
 class LichKham(Base): # chứa ngày khám để danh sách khám nó lấy về cái id ngày khám đó
     ngayKham = Column(Date, default=date.today, nullable=False)
     danhSachKham = relationship('DanhSachKham', backref='lichKham', lazy=True)
-#
+
 
 class DanhSachKham(Base):
     lichNgayKham_id = Column(Integer, ForeignKey(LichKham.id), nullable=False)
     chiTietDanhSachKham = relationship('ChiTietDanhSachKham', backref='danhSachKham', lazy=True)
 
 
-
-#
 class ChiTietDanhSachKham(Base): # trong class diagram la ThemBenhNhan
     danhSachKham_id = Column(Integer, ForeignKey(DanhSachKham.id), nullable=False)
     nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)

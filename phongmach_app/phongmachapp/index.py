@@ -33,14 +33,23 @@ def sreach_medicine():
     return render_template('tracuuthuoc.html', results=results, medicines_unit=medicines_unit)
 
 
-@app.route('/lapphieukham', methods=['get', 'post'])
+@app.route('/lapphieukham', methods=['post', 'get'])
 def lapPhieuKham():
     thuocs = dao.load_medicines()
     medicines_unit = dao.load_medicines_unit()
 
     if request.method.__eq__('POST'):
-        print(request.form)
-    return render_template('lapPhieuKham.html', thuocs=thuocs, medicines_unit=medicines_unit)
+        name = request.form.get('name')
+        datepicker = request.form.get('datepicker')
+        symptom = request.form.get('symptom')
+        diseasePrediction = request.form.get('diseasePrediction')
+        # nameMedicine = request.form.get('nameMedicine')
+        # quantity = request.form.get('quantity')
+        # howToUse = request.form.get('howToUse')
+
+        dao.add_phieu_kham(name, symptom, diseasePrediction, datepicker)
+    return render_template('lapPhieuKham.html', thuocs=thuocs,
+                           medicines_unit=medicines_unit)
 
 
 @app.route('/ketoathuoc')

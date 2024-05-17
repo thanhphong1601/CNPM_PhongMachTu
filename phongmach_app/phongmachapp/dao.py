@@ -1,6 +1,7 @@
 import json, hashlib
 from datetime import datetime
 
+from flask_login import current_user
 from sqlalchemy import func
 
 from phongmachapp.models import (Thuoc, LoaiThuoc, DonViThuoc, NguoiDung, GioiTinh, PhieuKham, ChiTietPhieuKham,
@@ -132,6 +133,19 @@ def sreach_medicines(q=None):
         query = query.filter(Thuoc.tenThuoc.contains(q))
 
     return query.all()
+
+
+def add_phieu_kham(tenBenhNhan, trieuChung, duDoanBenh, ngayKham):
+    # query = Thuoc.query
+    #
+    # if thuoc_id:
+    #     query = query.filter(Thuoc.id.)
+
+    phieuKham = PhieuKham(benhNhan_id=current_user.id, tenBenhNhan=tenBenhNhan, trieuChung=trieuChung,
+                          duDoanBenh=duDoanBenh, ngayKham=ngayKham)
+
+    db.session.add(phieuKham)
+    db.session.commit()
 
 
 if __name__ == '__main__':
