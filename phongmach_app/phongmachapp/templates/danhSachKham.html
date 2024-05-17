@@ -11,7 +11,7 @@
             <script>
                 $('#datepicker').datepicker({
                     uiLibrary: 'bootstrap5',
-                    format: 'dd/mm/yyyy'
+                    format: 'dd/mm/yyyy',
                 });
             </script>
         </div>
@@ -40,19 +40,19 @@
             <th></th>
         </tr>
         {% for p in patients %}
-        <tr>
+        <tr id="patient{{ p.id }}">
             <td>{{ p.id }}</td>
             <td>{{ p.hoTen }}</td>
             <td>{{ p.namSinh }}</td>
             <td>
-                <button class="btn btn-danger">&times;</button>
+                <button class="btn btn-danger" onclick="del_patient({{ p.id }})">&times;</button>
             </td>
 
         </tr>
         {% endfor %}
     </table>
-    <button class="btn btn-success">Lưu Danh Sách</button>
+    <button class="btn btn-success" >Lưu Danh Sách</button>
     {% endif %}
 </div>
-
+<script src="{{ url_for('static', filename='js/patients.js') }}"></script>
 {% endblock %}

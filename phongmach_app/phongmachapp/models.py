@@ -44,7 +44,7 @@ class NguoiDung(Base, UserMixin):
 
 
 class PhieuKham(Base):
-    benhNhan_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
+    benhNhan_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False) #bác sĩ
     tenBenhNhan = Column(String(100), nullable=False)
     trieuChung = Column(String(50), nullable=False)
     duDoanBenh = Column(String(50), nullable=False)
@@ -125,7 +125,7 @@ class DanhSachKham(Base):
 class ChiTietDanhSachKham(Base): # trong class diagram la ThemBenhNhan
     danhSachKham_id = Column(Integer, ForeignKey(DanhSachKham.id), nullable=False)
     nguoiDung_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
-    #nguoi dùng ở đây là tất cả
+    #nguoi dùng ở đây là tất cả - người đăng ký
     hoTen = Column(String(100), nullable=False)
     gioiTinh = Column(Enum(GioiTinh), default=GioiTinh.Nam)
     namSinh = Column(Date, nullable=False)
@@ -150,20 +150,20 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         #
-        # loaiThuoc1 = LoaiThuoc(tenLoai="Thuốc Ngủ")
-        # loaiThuoc2 = LoaiThuoc(tenLoai="Thuốc Nhứt Đầu")
-        #
-        # qd = QuyDinh(soTienKham=100000, soLoaiThuoc=30, soBenhNhan=40)
-        # db.session.add(qd)
-        # db.session.commit()
-        #
-        # import hashlib
-        # u = NguoiDung(hoTen='Quản Trị Viên',
-        #               anhDaiDien='https://res.cloudinary.com/dstjar2iy/image/upload/v1712391157/lwocwuc4opc6c9kl6fcw.jpg',
-        #               username='admin',
-        #               password=str(hashlib.md5("1".encode('utf-8')).hexdigest()),
-        #               vaiTro_NguoiDung=VaiTroNguoiDung.ADMIN)
-        #
-        # db.session.add(u)
-        # db.session.commit()
+        loaiThuoc1 = LoaiThuoc(tenLoai="Thuốc Ngủ")
+        loaiThuoc2 = LoaiThuoc(tenLoai="Thuốc Nhứt Đầu")
+
+        qd = QuyDinh(soTienKham=100000, soLoaiThuoc=30, soBenhNhan=40)
+        db.session.add(qd)
+        db.session.commit()
+
+        import hashlib
+        u = NguoiDung(hoTen='Quản Trị Viên',
+                      anhDaiDien='https://res.cloudinary.com/dstjar2iy/image/upload/v1712391157/lwocwuc4opc6c9kl6fcw.jpg',
+                      username='admin',
+                      password=str(hashlib.md5("1".encode('utf-8')).hexdigest()),
+                      vaiTro_NguoiDung=VaiTroNguoiDung.ADMIN)
+
+        db.session.add(u)
+        db.session.commit()
 
