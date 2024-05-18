@@ -1,20 +1,67 @@
 from datetime import datetime
 
-from flask import render_template, request, redirect, session
+from flask import render_template, request, redirect, session, jsonify, url_for
 from sqlalchemy import func
 
 import dao
 from phongmachapp import app, admin, login, db
 from flask_login import login_user, current_user, logout_user
-from phongmachapp.models import NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham, QuyDinh
+from phongmachapp.models import NguoiDung, LichKham, DanhSachKham, ChiTietDanhSachKham, QuyDinh, HoaDon, \
+    ChiTietPhieuKham
 import cloudinary.uploader
-from decorators import loggedin, not_loggedin
+from decorators import loggedin, not_loggedin, thuNgan_loggedin
 
 
 @app.route('/')
 def index():
     categories = dao.load_categories()
     return render_template('index.html', categories=categories)
+
+
+@app.route('/bacsi')
+def doctor():
+    return render_template('trangBacSi.html')
+
+
+@app.route('/tracuuthuoc')
+def sreach_medicine():
+    q = request.args.get('q')
+    # medi_id = request.args.get('thuoc_id')
+    medicines_unit = dao.load_medicines_unit()
+
+    results = dao.sreach_medicines(q=q)
+    return render_template('tracuuthuoc.html', results=results, medicines_unit=medicines_unit)
+
+
+@app.route('/lapphieukham', methods=['post', 'get'])
+def lapPhieuKham():
+    thuocs = dao.load_medicines()
+    medicines_unit = dao.load_medicines_unit()
+
+    if request.method.__eq__('POST'):
+        name = request.form.get('name')
+        datepicker = request.form.get('datepicker')
+        symptom = request.form.get('symptom')
+        diseasePrediction = request.form.get('diseasePrediction')
+        # nameMedicine = request.form.get('nameMedicine')
+        # quantity = request.form.get('quantity')
+        # howToUse = request.form.get('howToUse')
+
+        dao.add_phieu_kham(name, symptom, diseasePrediction, datepicker)
+    return render_template('lapPhieuKham.html', thuocs=thuocs,
+                           medicines_unit=medicines_unit)
+
+
+@app.route('/ketoathuoc')
+def keToaThuoc():
+    thuocs = dao.load_medicines()
+    note = dao.load_examination()
+    examinationDetails = dao.load_examination_details()
+
+    if request.method.__eq__('POST'):
+        print(request.form)
+    return render_template('thuocKeToa.html', thuocs=thuocs, note=note,
+                           examinationDetails=examinationDetails)
 
 
 @app.route('/benhnhan')
@@ -25,6 +72,7 @@ def user():
 @app.route('/dangkykham', methods=['get', 'post'])
 @not_loggedin
 def dangKyLich():
+    err_msg = ''
     genders = dao.load_gender()
     # print(genders)
     if request.method.__eq__('POST'):
@@ -40,24 +88,42 @@ def dangKyLich():
 
         # print(ngay_kham)
         # print(date)
+        if (ngay_kham < datetime.now().date()):
+            err_msg = 'Ngày khám không hợp lệ! Hãy chọn lại ngày khác!'
+        else:
+            lichKham_check = dao.get_lichKham_by_date(ngay_kham)
+            if lichKham_check:
+                # danhSachKham_check = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_check.id).first()
+                danhSachKham_check = dao.get_danhSachKham_by_lichKhamID(lichKham_check.id)
+                # print(danhSachKham_check)
+                # lịch và danh sách đều đã có
+                if danhSachKham_check:
+                    # thêm chi tiết bệnh nhân
+                    max = dao.get_max_benhNhan()
+                    # print(danhSachKham_check.id)
+                    result = dao.count_soBenhNhan(danhSachKham_check.id)
 
-        lichKham_check = LichKham.query.filter_by(ngayKham=ngay_kham).first()
-        if lichKham_check:
-            danhSachKham_check = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_check.id).first()
+                    # print(result)
 
-            # lịch và danh sách đều đã có
-            if danhSachKham_check:
-                # thêm chi tiết bệnh nhân
-                max = dao.get_max_benhNhan()
-                # print(danhSachKham_check.id)
-                result = dao.count_soBenhNhan(danhSachKham_check.id)
+                    # check số bệnh nhân cùng danh sách
+                    if (result <= max):
+                        dao.add_detail_benhNhan(danhSachKham_check.id,
+                                                current_user.id,
+                                                hoTen=name,
+                                                gioiTinh=gender,
+                                                namSinh=nam_sinh,
+                                                soDienThoai=phone,
+                                                diaChi=address)
 
-
-                print(result)
-
-                #check số bệnh nhân cùng danh sách
-                if (result<=max):
-                    dao.add_detail_benhNhan(danhSachKham_check.id,
+                        return redirect('/')
+                    else:
+                        # thông báo cho người dùng...
+                        return redirect('/')
+                else:
+                    # tạo danh sách mới
+                    dao.add_danhSachKham(lichKham_check.id)
+                    danhSachKham_new = dao.get_danhSachKham_by_lichKhamID(lichKham_check.id)
+                    dao.add_detail_benhNhan(danhSachKham_new.id,
                                             current_user.id,
                                             hoTen=name,
                                             gioiTinh=gender,
@@ -66,13 +132,14 @@ def dangKyLich():
                                             diaChi=address)
 
                     return redirect('/')
-                else:
-                    #thông báo cho người dùng...
-                    return redirect('/')
+
+            # không lịch không ds
             else:
-                # tạo danh sách mới
-                dao.add_danhSachKham(lichKham_check.id)
-                dao.add_detail_benhNhan(danhSachKham_check.id,
+                dao.add_lichKham(ngay_kham)
+                lichKham_new = dao.get_lichKham_by_date(ngay_kham)
+                dao.add_danhSachKham(lichKham_new.id)
+                danhSachKham_new = dao.get_danhSachKham_by_lichKhamID(lichKham_new.id)
+                dao.add_detail_benhNhan(danhSachKham_new.id,
                                         current_user.id,
                                         hoTen=name,
                                         gioiTinh=gender,
@@ -82,22 +149,7 @@ def dangKyLich():
 
                 return redirect('/')
 
-        else:
-            dao.add_lichKham(ngay_kham)
-            lichKham_check_new = LichKham.query.filter_by(ngayKham=ngay_kham).first()
-            dao.add_danhSachKham(lichKham_check_new.id)
-            danhSachKham_check_new = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_check_new.id).first()
-            dao.add_detail_benhNhan(danhSachKham_check_new.id,
-                                    current_user.id,
-                                    hoTen=name,
-                                    gioiTinh=gender,
-                                    namSinh=nam_sinh,
-                                    soDienThoai=phone,
-                                    diaChi=address)
-
-            return redirect('/')
-
-    return render_template('dangKyKham.html', genders=genders)
+    return render_template('dangKyKham.html', genders=genders, err_msg=err_msg)
 
 
 @app.route('/yta')
@@ -105,26 +157,52 @@ def trang_yTa():
     return render_template('trangYTa.html')
 
 
-# @app.route('/danhsachkham')
-# def danhSachKham():
-#     return render_template('danhSachKham.html')
-
-
 @app.route('/danhsachkham', methods=['get', 'post'])
+# @not_loggedin
 def get_patient_list():
-    date = request.form.get('date')
-    ngayChon = datetime.strptime(date, '%d/%m/%Y')# Chuyển đổi sang định dạng date
-
-    # Xử lí dữ liệu ở đây
-    lichKham_check = LichKham.query.filter_by(ngayKham=ngayChon).first()
-    danh_sach_kham = DanhSachKham.query.filter_by(lichNgayKham_id=lichKham_check.id).all()
-    # print(danh_sach_kham)
     patients = []
-    for item in danh_sach_kham:
-        patient_info = ChiTietDanhSachKham.query.filter_by(danhSachKham_id=item.id).all()
-        patients.extend(patient_info)
+    if request.method.__eq__('POST'):
+        date = request.form.get('date')
+        ngayChon = datetime.strptime(date, '%d/%m/%Y')  # Chuyển đổi sang định dạng date
+
+        # Xử lí dữ liệu
+        lichKham_check = dao.get_lichKham_by_date(ngayChon)
+        if lichKham_check:
+            danhSachKham = dao.get_danhSachKham_by_lichKhamID(lichKham_check.id)
+            print(danhSachKham)
+            patient_infos = dao.get_patient_list_info_by_listID(danhSachKham.id)
+            patients.extend(patient_infos)
+
     return render_template('danhsachkham.html', patients=patients)
 
+
+@app.route('/thungan')
+# @thuNgan_loggedin
+def trang_ThuNgan():
+    return render_template('trangThuNgan.html')
+
+
+@app.route('/tracuuhoadon')
+# @thuNgan_loggedin
+def traCuuHoaDon():
+    find = request.args.get('find')
+    hoaDons = dao.load_hoaDon(find)
+
+    return render_template('hoaDon.html', hoaDons=hoaDons)
+
+
+# @app.route('/update_payment_status', methods=['post'])
+# def update_payment_status():
+#     data = request.json
+#     hoa_don_id = data.get('hoa_don_id')
+#     hoa_don = HoaDon.query().filter_by(id=hoa_don_id).first()
+#
+#     if hoa_don:
+#         hoa_don.da_thanh_toan = not hoa_don.da_thanh_toan  # đảo trạng thái
+#         db.session.commit()
+#         return jsonify({'status': 'success', 'da_thanh_toan': hoa_don.da_thanh_toan})
+#
+#     return jsonify({'status': 'error', 'message': 'Hóa đơn không tồn tại'}), 404
 
 
 @app.route('/login', methods=['get', 'post'])
@@ -132,6 +210,7 @@ def login_my_user():
     if current_user.is_authenticated:
         return redirect('/')
     err_msg = ''
+    done_msg = request.args.get('done_msg')
     if request.method.__eq__('POST'):
         username = request.form.get('username')
         password = request.form.get('password')
@@ -173,7 +252,6 @@ def register_user():
                              username=username,
                              password=password,
                              avatar=avatar_path)
-
                 return redirect('/login')
             else:
                 err_msg = 'Mật khẩu xác nhận không đúng'
@@ -194,9 +272,9 @@ def process_admin_login():
     return redirect('/admin')
 
 
-@app.route('/api/test', methods=['post'])
-def test_add():
-    print(request.json)
+# @app.route('/api/test', methods=['post'])
+# def test_add():
+#     print(request.json)
 
 
 @login.user_loader
